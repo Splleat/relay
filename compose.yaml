@@ -1,0 +1,22 @@
+services:
+  db:
+    image: mysql:9.6.0
+    container_name: mysql
+    restart: unless-stopped
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+    networks:
+      - messenger-network
+
+volumes:
+  mysql_data:
+
+networks:
+  messenger-network:
+    driver: bridge

@@ -1,0 +1,9 @@
+services:
+  db:
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_USER: user
+      MYSQL_DATABASE: my_db
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "127.0.0.1:13306:3306"
