@@ -1,9 +1,9 @@
 package me.splleat.messengerapp
 
+import me.splleat.messengerapp.support.IntegrationTest
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
+@IntegrationTest
 class MessengerAppApplicationTests {
 
     @Test
