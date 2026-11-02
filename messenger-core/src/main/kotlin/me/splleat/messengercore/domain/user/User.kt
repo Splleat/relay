@@ -26,4 +26,4 @@ class User(
 
     @Column(name = "last_login_at")
     var lastLoginAt: LocalDateTime? = null
-): BaseEntity()
+) : BaseEntity()

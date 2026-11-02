@@ -22,4 +22,4 @@ class ChannelMember(
 
     @Column(name = "last_read_message_id")
     var lastReadMessageId: Long? = null
-): BaseEntity()
+) : BaseEntity()

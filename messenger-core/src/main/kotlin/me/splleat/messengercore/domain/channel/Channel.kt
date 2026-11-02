@@ -19,7 +19,7 @@ class Channel(
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "channel_type")
     var channelType: ChannelType
-): BaseEntity()
+) : BaseEntity()
 
 enum class ChannelType {
     PUBLIC,

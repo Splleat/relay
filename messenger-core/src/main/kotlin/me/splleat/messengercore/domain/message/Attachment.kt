@@ -19,4 +19,4 @@ class Attachment(
 
     @Column(name = "size")
     var size: Long
-): BaseEntity()
+) : BaseEntity()

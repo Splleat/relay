@@ -10,4 +10,4 @@ import me.splleat.messengercore.domain.BaseEntity
 class Space(
     @Column(name = "name")
     var name: String
-): BaseEntity()
+) : BaseEntity()

@@ -25,7 +25,7 @@ class SpaceMember(
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "space_role")
     var role: SpaceRole
-): BaseEntity()
+) : BaseEntity()
 
 enum class SpaceRole {
     OWNER,

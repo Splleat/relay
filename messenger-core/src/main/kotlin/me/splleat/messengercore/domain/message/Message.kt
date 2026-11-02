@@ -26,4 +26,4 @@ class Message(
 
     @Column(name = "idempotency_key", unique = true)
     val idempotencyKey: UUID
-): BaseEntity()
+) : BaseEntity()
