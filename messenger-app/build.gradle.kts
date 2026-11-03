@@ -5,6 +5,10 @@ plugins {
     id("io.spring.dependency-management")
 }
 
+tasks.bootRun {
+    workingDir = rootProject.projectDir
+}
+
 dependencies {
     implementation(project(":messenger-core"))
 
