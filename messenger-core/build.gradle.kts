@@ -29,4 +29,6 @@ dependencies {
     implementation("io.hypersistence:hypersistence-utils-hibernate-73:3.16.0")
 
     runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    implementation("org.flywaydb:flyway-mysql")
 }
