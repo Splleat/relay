@@ -1,6 +1,5 @@
 spring:
   jpa:
-    show-sql: true
     properties:
       hibernate:
         format_sql: true
@@ -8,5 +7,6 @@ spring:
 logging:
   level:
     me.splleat: DEBUG
-    org.hibernate.sql: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
     org.springframework: WARN

@@ -22,6 +22,7 @@ dependencies {
     testFixturesApi("org.springframework.boot:spring-boot-starter-test")
     testFixturesApi("org.jetbrains.kotlin:kotlin-test-junit5")
     testFixturesApi("io.mockk:mockk:1.14.11")
+    testFixturesApi("io.mockk:mockk-bdd:1.14.11")
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

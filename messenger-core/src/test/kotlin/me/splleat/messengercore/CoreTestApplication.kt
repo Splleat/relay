@@ -1,0 +1,6 @@
+package me.splleat.messengercore
+
+import org.springframework.boot.autoconfigure.SpringBootApplication
+
+@SpringBootApplication
+class CoreTestApplication
