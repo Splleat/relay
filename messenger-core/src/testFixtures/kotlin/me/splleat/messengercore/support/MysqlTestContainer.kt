@@ -1,4 +1,4 @@
-package me.splleat.messengerapp.support
+package me.splleat.messengercore.support
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
@@ -11,6 +11,7 @@ class MysqlTestContainer {
     @Bean
     @ServiceConnection
     fun mysqlContainer(): MySQLContainer {
-        return MySQLContainer("mysql:9.6.0") 
+        return MySQLContainer("mysql:9.6.0")
+            .withReuse(true)
     }
 }

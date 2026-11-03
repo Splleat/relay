@@ -1,4 +1,4 @@
-package me.splleat.messengerapp.support
+package me.splleat.messengercore.support
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
