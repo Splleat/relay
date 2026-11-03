@@ -1,22 +1,32 @@
 package me.splleat.messengercore.domain.message
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import me.splleat.messengercore.domain.BaseEntity
 
 @Entity
 @Table(name = "attachments")
-class Attachment(
-    @Column(name = "message_id")
-    val messageId: Long,
+open class Attachment private constructor(
+    messageId: Long,
+    originalName: String,
+    url: String,
+    size: Long
+) : BaseEntity() {
 
-    @Column(name = "original_name")
-    var originalName: String,
+    var messageId: Long = messageId
+        protected set
 
-    @Column(name = "url")
-    var url: String,
+    var originalName: String = originalName
+        protected set
 
-    @Column(name = "size")
-    var size: Long
-) : BaseEntity()
+    var url: String = url
+        protected set
+
+    var size: Long = size
+        protected set
+
+    companion object {
+        fun create(messageId: Long, originalName: String, url: String, size: Long) =
+            Attachment(messageId, originalName, url, size)
+    }
+}

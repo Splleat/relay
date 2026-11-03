@@ -1,25 +1,26 @@
 package me.splleat.messengercore.domain.channel
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
 import me.splleat.messengercore.domain.BaseEntity
 
 @Entity
-@Table(
-    name = "channel_members",
-    uniqueConstraints = [
-        UniqueConstraint(name = "uq_channel_user_settings_user_channel", columnNames = ["user_id", "channel_id"])
-    ]
-)
-class ChannelMember(
-    @Column(name = "channel_id")
-    val channelId: Long,
+@Table(name = "channel_members")
+open class ChannelMember private constructor(
+    userId: Long,
+    channelId: Long
+) : BaseEntity() {
+    var userId: Long = userId
+        protected set
 
-    @Column(name = "user_id")
-    val userId: Long,
+    var channelId: Long = channelId
+        protected set
 
-    @Column(name = "last_read_message_id")
     var lastReadMessageId: Long? = null
-) : BaseEntity()
+        protected set
+
+    companion object {
+        fun create(userId: Long, channelId: Long) =
+            ChannelMember(userId, channelId)
+    }
+}

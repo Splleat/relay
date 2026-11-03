@@ -1,29 +1,33 @@
 package me.splleat.messengercore.domain.message
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.Index
 import jakarta.persistence.Table
-import me.splleat.messengercore.domain.BaseEntity
+import me.splleat.messengercore.domain.SoftDeletableEntity
 import java.util.UUID
 
 @Entity
-@Table(
-    name = "messages",
-    indexes = [
-        Index(name = "idx_messages_channel_message", columnList = "channel_id, id")
-    ]
-)
-class Message(
-    @Column(name = "user_id")
-    val userId: Long,
+@Table(name = "messages")
+open class Message private constructor(
+    userId: Long,
+    channelId: Long,
+    content: String,
+    idempotencyKey: UUID
+) : SoftDeletableEntity() {
 
-    @Column(name = "channel_id")
-    val channelId: Long,
+    var userId: Long = userId
+        protected set
 
-    @Column(name = "content")
-    val content: String,
+    var channelId: Long = channelId
+        protected set
 
-    @Column(name = "idempotency_key", unique = true)
-    val idempotencyKey: UUID
-) : BaseEntity()
+    var content: String = content
+        protected set
+
+    var idempotencyKey: UUID = idempotencyKey
+        protected set
+
+    companion object {
+        fun create(userId: Long, channelId: Long, content: String, idempotencyKey: UUID) =
+            Message(userId, channelId, content, idempotencyKey)
+    }
+}

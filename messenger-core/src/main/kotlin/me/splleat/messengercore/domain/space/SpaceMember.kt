@@ -1,31 +1,37 @@
 package me.splleat.messengercore.domain.space
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
 import me.splleat.messengercore.domain.BaseEntity
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
 @Entity
-@Table(
-    name = "space_members",
-    uniqueConstraints = [
-        UniqueConstraint(name = "uk_space_members_user_space", columnNames = ["user_id", "space_id"])
-    ]
-)
-class SpaceMember(
-    @Column(name = "user_id")
-    val userId: Long,
+@Table(name = "space_members")
+open class SpaceMember private constructor(
+    userId: Long,
+    spaceId: Long,
+    spaceRole: SpaceRole
+) : BaseEntity() {
 
-    @Column(name = "space_id")
-    val spaceId: Long,
+    var userId: Long = userId
+        protected set
+
+    var spaceId: Long = spaceId
+        protected set
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
-    @Column(name = "space_role")
-    var role: SpaceRole
-) : BaseEntity()
+    var spaceRole: SpaceRole = spaceRole
+        protected set
+
+    companion object {
+        fun createOwner(userId: Long, spaceId: Long) =
+            SpaceMember(userId, spaceId, SpaceRole.OWNER)
+
+        fun createMember(userId: Long, spaceId: Long) =
+            SpaceMember(userId, spaceId, SpaceRole.MEMBER)
+    }
+}
 
 enum class SpaceRole {
     OWNER,

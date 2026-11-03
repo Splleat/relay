@@ -1,29 +1,53 @@
 package me.splleat.messengercore.domain.user
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
-import me.splleat.messengercore.domain.BaseEntity
+import me.splleat.messengercore.common.BusinessException
+import me.splleat.messengercore.domain.SoftDeletableEntity
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "users")
-class User(
-    @Column(name = "email", unique = true)
-    var email: String,
+open class User private constructor(
+    name: String,
+    email: String,
+    passwordHash: String,
+) : SoftDeletableEntity() {
 
-    @Column(name = "password_hash")
-    var passwordHash: String,
+    var name: String = name
+        protected set
 
-    @Column(name = "name")
-    var name: String,
+    var email: String = email
+        protected set
 
-    @Column(name = "image_url")
-    var imageUrl: String? = null,
+    private var passwordHash: String = passwordHash
 
-    @Column(name = "status_message")
-    var statusMessage: String? = null,
+    var imageUrl: String? = null
+        protected set
 
-    @Column(name = "last_login_at")
+    var statusMessage: String? = null
+        protected set
+
     var lastLoginAt: LocalDateTime? = null
-) : BaseEntity()
+        protected set
+
+    companion object {
+        fun register(
+            name: String,
+            email: String,
+            passwordHash: String,
+        ) = User(name, email, passwordHash)
+    }
+
+    fun login(
+        rawPassword: String,
+        matches: (raw: String, hash: String) -> Boolean,
+        at: LocalDateTime,
+    ) {
+        if (!matches(rawPassword, passwordHash)) {
+            throw BusinessException(UserErrorCode.PASSWORD_MISMATCH)
+        }
+
+        lastLoginAt = at
+    }
+}
