@@ -45,7 +45,7 @@ open class User private constructor(
         at: LocalDateTime,
     ) {
         if (!matches(rawPassword, passwordHash)) {
-            throw BusinessException(UserErrorCode.PASSWORD_MISMATCH)
+            throw BusinessException(UserErrorCode.INVALID_CREDENTIALS)
         }
 
         lastLoginAt = at

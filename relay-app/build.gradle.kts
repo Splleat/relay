@@ -17,6 +17,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("tools.jackson.module:jackson-module-kotlin")
+    implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
+    implementation("org.springframework:spring-tx")
 
     testImplementation(testFixtures(project(":relay-core")))
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
