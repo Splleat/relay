@@ -1,4 +1,0 @@
-logging:
-  level:
-    me.splleat.messengercore: INFO
-    org.springframework: WARN

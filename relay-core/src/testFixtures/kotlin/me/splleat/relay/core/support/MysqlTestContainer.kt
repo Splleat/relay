@@ -1,0 +1,17 @@
+package me.splleat.relay.core.support
+
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection
+import org.springframework.context.annotation.Bean
+import org.testcontainers.mysql.MySQLContainer
+
+@TestConfiguration(proxyBeanMethods = false)
+class MysqlTestContainer {
+
+    @Bean
+    @ServiceConnection
+    fun mysqlContainer(): MySQLContainer {
+        return MySQLContainer("mysql:9.6.0")
+            .withReuse(true)
+    }
+}
