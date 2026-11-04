@@ -13,9 +13,9 @@ class UserRegisterUseCase(
     private val passwordEncoder: PasswordEncoder
 ) {
     @Transactional
-    fun execute(command: UserRegisterCommand) {
+    fun execute(command: UserRegisterCommand): Long {
         val user: User = User.register(command.name, command.email, passwordEncoder.hash(command.rawPassword))
 
-        userService.register(user)
+        return userService.register(user).requireId()
     }
 }

@@ -1,4 +1,4 @@
-package me.splleat.messengerapp
+package me.splleat
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

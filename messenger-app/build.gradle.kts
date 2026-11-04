@@ -14,6 +14,11 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("tools.jackson.module:jackson-module-kotlin")
 
     testImplementation(testFixtures(project(":messenger-core")))
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+
 }
