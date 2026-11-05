@@ -48,6 +48,14 @@ open class User private constructor(
             throw BusinessException(UserErrorCode.INVALID_CREDENTIALS)
         }
 
+        if (isDeleted) {
+            throw BusinessException(UserErrorCode.DEACTIVATED)
+        }
+
         lastLoginAt = at
+    }
+
+    fun withdraw() {
+        markDeleted()
     }
 }
