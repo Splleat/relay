@@ -1,6 +1,7 @@
 package me.splleat.relay.core.application.user
 
 import me.splleat.relay.core.application.UseCase
+import me.splleat.relay.core.application.user.dto.UserRegisterCommand
 import me.splleat.relay.core.common.hash
 import me.splleat.relay.core.domain.user.User
 import me.splleat.relay.core.domain.user.UserService

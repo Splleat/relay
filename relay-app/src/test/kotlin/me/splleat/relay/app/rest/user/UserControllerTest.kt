@@ -3,18 +3,25 @@ package me.splleat.relay.app.rest.user
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.bdd.given
 import io.mockk.bdd.then
+import me.splleat.relay.app.common.SecurityConfig
+import me.splleat.relay.app.rest.user.dto.UserRegisterRequest
+import me.splleat.relay.core.application.user.UserGetMeUseCase
 import me.splleat.relay.core.application.user.UserRegisterUseCase
+import me.splleat.relay.core.application.user.dto.UserResult
 import me.splleat.relay.core.common.BusinessException
 import me.splleat.relay.core.domain.user.UserErrorCode
+import me.splleat.relay.support.WithTestUser
+import me.splleat.relay.support.postJson
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
-import org.springframework.http.MediaType
+import org.springframework.context.annotation.Import
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.post
-import tools.jackson.module.kotlin.jsonMapper
+import org.springframework.test.web.servlet.get
 
 @WebMvcTest(UserController::class)
+@Import(SecurityConfig::class)
 class UserControllerTest {
 
     @Autowired
@@ -22,6 +29,9 @@ class UserControllerTest {
 
     @MockkBean
     private lateinit var userRegisterUseCase: UserRegisterUseCase
+
+    @MockkBean
+    private lateinit var userGetMeUseCase: UserGetMeUseCase
 
     @Test
     fun `사용자를 등록하면 201을 반환한다`() {
@@ -32,10 +42,7 @@ class UserControllerTest {
         given { userRegisterUseCase.execute(request.toCommand()) } returns expectedId
 
         // when
-        val result = mockMvc.post("/api/v1/users") {
-            contentType = MediaType.APPLICATION_JSON
-            content = jsonMapper().writeValueAsString(request)
-        }
+        val result = mockMvc.postJson("/api/v1/users", request)
 
         // then
         result.andExpect {
@@ -52,10 +59,7 @@ class UserControllerTest {
         given { userRegisterUseCase.execute(any()) } throws BusinessException(UserErrorCode.EMAIL_DUPLICATED)
 
         // when
-        val result = mockMvc.post("/api/v1/users") {
-            contentType = MediaType.APPLICATION_JSON
-            content = jsonMapper().writeValueAsString(request)
-        }
+        val result = mockMvc.postJson("/api/v1/users", request)
 
         // then
         result.andExpect {
@@ -70,10 +74,7 @@ class UserControllerTest {
         val request = UserRegisterRequest("테스트", "invalid-email", "password")
 
         // when
-        val result = mockMvc.post("/api/v1/users") {
-            contentType = MediaType.APPLICATION_JSON
-            content = jsonMapper().writeValueAsString(request)
-        }
+        val result = mockMvc.postJson("/api/v1/users", request)
 
         // then
         result.andExpect {
@@ -91,16 +92,34 @@ class UserControllerTest {
         """.trimIndent()
 
         // when
-        val result = mockMvc.post("/api/v1/users") {
-            contentType = MediaType.APPLICATION_JSON
-            content = invalidJson
-        }
+        val result = mockMvc.postJson("/api/v1/users", invalidJson)
 
         // then
         result.andExpect {
             status { isBadRequest() }
             jsonPath("$.code") { value("BAD_REQUEST") }
             jsonPath("$.errors") { isArray() }
+        }
+    }
+
+    @Test
+    @WithTestUser
+    fun `내 정보를 조회하면 200을 반환한다`() {
+        // given
+        val userResult = UserResult("테스트", "test@test.com", "이미지", "상태 메시지")
+
+        given { userGetMeUseCase.execute(any()) } returns userResult
+
+        // when
+        val result = mockMvc.get("/api/v1/users/me") {
+            with(csrf())
+        }
+
+        // then
+        result.andExpect {
+            status { isOk() }
+            jsonPath("$.name") { value("테스트") }
+            jsonPath("$.email") { value("test@test.com") }
         }
     }
 }

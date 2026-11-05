@@ -19,8 +19,10 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
     implementation("org.springframework:spring-tx")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-session-data-redis")
 
     testImplementation(testFixtures(project(":relay-core")))
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 }
