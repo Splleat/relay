@@ -1,6 +1,7 @@
 package me.splleat.relay.app.rest.user
 
 import jakarta.validation.Valid
+import me.splleat.relay.app.rest.user.dto.UserRegisterRequest
 import me.splleat.relay.core.application.user.UserRegisterUseCase
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

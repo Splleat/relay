@@ -1,9 +1,9 @@
-package me.splleat.relay.app.rest.user
+package me.splleat.relay.app.rest.user.dto
 
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
-import me.splleat.relay.core.application.user.UserRegisterCommand
+import me.splleat.relay.core.application.user.dto.UserRegisterCommand
 
 data class UserRegisterRequest(
 

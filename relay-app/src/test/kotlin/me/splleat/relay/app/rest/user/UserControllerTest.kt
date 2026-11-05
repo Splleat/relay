@@ -3,6 +3,7 @@ package me.splleat.relay.app.rest.user
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.bdd.given
 import io.mockk.bdd.then
+import me.splleat.relay.app.rest.user.dto.UserRegisterRequest
 import me.splleat.relay.core.application.user.UserRegisterUseCase
 import me.splleat.relay.core.common.BusinessException
 import me.splleat.relay.core.domain.user.UserErrorCode
