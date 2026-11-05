@@ -1,4 +1,4 @@
-rootProject.name = "messenger"
+rootProject.name = "relay"
 
-include("messenger-core")
-include("messenger-app")
+include("relay-core")
+include("relay-app")

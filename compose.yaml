@@ -12,11 +12,11 @@ services:
       retries: 10
       start_period: 30s
     networks:
-      - messenger-network
+      - relay-network
 
 volumes:
   mysql_data:
 
 networks:
-  messenger-network:
+  relay-network:
     driver: bridge

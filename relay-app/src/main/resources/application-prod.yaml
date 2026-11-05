@@ -1,0 +1,4 @@
+logging:
+  level:
+    me.splleat.relay: INFO
+    org.springframework: WARN
