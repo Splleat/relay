@@ -42,4 +42,19 @@ class UserServiceTest {
             .isEqualTo(UserErrorCode.EMAIL_DUPLICATED)
         then(exactly = 0) { userRepository.save(any()) }
     }
+
+    @Test
+    fun `등록되지 않은 이메일로 사용자를 조회하면 예외가 발생한다`() {
+        // given
+        val email = "test@test.com"
+
+        given { userRepository.findByEmail(email) } returns null
+
+        // when
+        val exception = assertThrows<BusinessException> { userService.getUserForLogin(email) }
+
+        // then
+        assertThat(exception.errorCode)
+            .isEqualTo(UserErrorCode.INVALID_CREDENTIALS)
+    }
 }

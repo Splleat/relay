@@ -49,7 +49,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(BusinessException::class)
     fun handleBusiness(e: BusinessException): ResponseEntity<ApiErrorResponse> =
-            ResponseEntity.status(e.errorCode.type.status).body(ApiErrorResponse(e.errorCode.code, e.errorCode.message))
+            ResponseEntity.status(e.errorCode.type.status).body(ApiErrorResponse.from(e.errorCode))
 
     @ExceptionHandler(DataIntegrityViolationException::class)
     fun handleConflict(e: DataIntegrityViolationException): ResponseEntity<ApiErrorResponse> {

@@ -7,3 +7,6 @@ services:
       MYSQL_PASSWORD: 1234
     ports:
       - "127.0.0.1:13306:3306"
+  redis:
+    ports:
+      - "127.0.0.1:6379:6379"
