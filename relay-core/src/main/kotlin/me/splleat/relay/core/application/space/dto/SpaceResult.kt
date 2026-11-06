@@ -10,6 +10,6 @@ data class SpaceResult(
 ) {
     companion object {
         fun from(space: Space) =
-            SpaceResult(space.requireId(), space.name, space.type)
+            SpaceResult(space.requireId(), space.name, space.spaceType)
     }
 }

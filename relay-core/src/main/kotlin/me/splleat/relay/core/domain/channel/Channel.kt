@@ -9,15 +9,15 @@ import org.hibernate.type.SqlTypes
 @Entity
 @Table(name = "channels")
 open class Channel private constructor(
-    spaceId: Long,
-    name: String,
+    spaceId: Long?,
+    name: String?,
     channelType: ChannelType,
 ) : SoftDeletableEntity() {
 
-    var spaceId: Long = spaceId
+    var spaceId: Long? = spaceId
         protected set
 
-    var name: String = name
+    var name: String? = name
         protected set
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
@@ -25,15 +25,16 @@ open class Channel private constructor(
         protected set
 
     companion object {
-        fun createDirectChannel(spaceId: Long, name: String) =
-            Channel(spaceId, name, ChannelType.DM)
+        fun createDirectChannel(spaceId: Long) =
+            Channel(spaceId, null, ChannelType.DM)
 
         fun createPublicChannel(spaceId: Long, name: String) =
-            Channel(spaceId, name, ChannelType.PUBLIC)
+            Channel(spaceId, name, ChannelType.SPACE)
     }
 }
 
 enum class ChannelType {
-    PUBLIC,
-    DM
+    SPACE,
+    DM,
+    GROUP_DM
 }

@@ -5,17 +5,17 @@ CREATE TABLE attachments
     original_name VARCHAR(255) NOT NULL,
     url           VARCHAR(255) NOT NULL,
     size          BIGINT       NOT NULL,
-    created_at    DATETIME(6)     NOT NULL,
-    updated_at    DATETIME(6) NULL,
+    created_at    DATETIME(6)  NOT NULL,
+    updated_at    DATETIME(6)  NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE channel_members
 (
-    id                   BIGINT   NOT NULL,
-    user_id              BIGINT   NOT NULL,
-    channel_id           BIGINT   NOT NULL,
-    last_read_message_id BIGINT NULL,
+    id                   BIGINT      NOT NULL,
+    user_id              BIGINT      NOT NULL,
+    channel_id           BIGINT      NOT NULL,
+    last_read_message_id BIGINT      NULL,
     created_at           DATETIME(6) NOT NULL,
     updated_at           DATETIME(6) NULL,
     PRIMARY KEY (id)
@@ -24,12 +24,23 @@ CREATE TABLE channel_members
 CREATE TABLE channels
 (
     id           BIGINT      NOT NULL,
-    space_id     BIGINT      NOT NULL,
-    name         VARCHAR(50) NOT NULL,
+    space_id     BIGINT      NULL,
+    name         VARCHAR(50) NULL,
     channel_type VARCHAR(50) NOT NULL,
-    created_at   DATETIME(6)    NOT NULL,
+    created_at   DATETIME(6) NOT NULL,
     updated_at   DATETIME(6) NULL,
     deleted_at   DATETIME(6) NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE direct_channels
+(
+    id           BIGINT      NOT NULL,
+    user_low_id  BIGINT      NOT NULL,
+    user_high_id BIGINT      NOT NULL,
+    channel_id   BIGINT      NOT NULL,
+    created_at   DATETIME(6) NOT NULL,
+    updated_at   DATETIME(6) NULL,
     PRIMARY KEY (id)
 );
 
@@ -40,9 +51,9 @@ CREATE TABLE messages
     channel_id      BIGINT        NOT NULL,
     content         VARCHAR(1000) NOT NULL,
     idempotency_key BINARY(16)    NOT NULL,
-    created_at      DATETIME(6)      NOT NULL,
-    updated_at      DATETIME(6) NULL,
-    deleted_at      DATETIME(6) NULL,
+    created_at      DATETIME(6)   NOT NULL,
+    updated_at      DATETIME(6)   NULL,
+    deleted_at      DATETIME(6)   NULL,
     PRIMARY KEY (id)
 );
 
@@ -52,7 +63,7 @@ CREATE TABLE space_members
     user_id    BIGINT      NOT NULL,
     space_id   BIGINT      NOT NULL,
     space_role VARCHAR(50) NOT NULL,
-    created_at DATETIME(6)    NOT NULL,
+    created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6) NULL,
     PRIMARY KEY (id)
 );
@@ -61,8 +72,8 @@ CREATE TABLE spaces
 (
     id         BIGINT      NOT NULL,
     name       VARCHAR(50) NOT NULL,
-    type       VARCHAR(50) NOT NULL,
-    created_at DATETIME(6)    NOT NULL,
+    space_type VARCHAR(50) NOT NULL,
+    created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6) NULL,
     deleted_at DATETIME(6) NULL,
     PRIMARY KEY (id)
@@ -76,10 +87,10 @@ CREATE TABLE users
     password_hash  VARCHAR(255) NOT NULL,
     image_url      VARCHAR(255) NULL,
     status_message VARCHAR(255) NULL,
-    last_login_at  DATETIME(6) NULL,
-    created_at     DATETIME(6)     NOT NULL,
-    updated_at     DATETIME(6) NULL,
-    deleted_at     DATETIME(6) NULL,
+    last_login_at  DATETIME(6)  NULL,
+    created_at     DATETIME(6)  NOT NULL,
+    updated_at     DATETIME(6)  NULL,
+    deleted_at     DATETIME(6)  NULL,
     PRIMARY KEY (id)
 );
 
@@ -114,6 +125,29 @@ ALTER TABLE channels
     ADD CONSTRAINT fk_channels_spaces FOREIGN KEY (space_id) REFERENCES spaces (id) ON DELETE NO ACTION;
 
 CREATE INDEX fk_channels_spaces_idx ON channels (space_id);
+
+ALTER TABLE channels
+    ADD CONSTRAINT chk_channels_space_channel CHECK ((channel_type = 'SPACE') = (space_id IS NOT NULL) );
+
+ALTER TABLE direct_channels
+    ADD CONSTRAINT fk_direct_channels_users_low FOREIGN KEY (user_low_id) REFERENCES users (id) ON DELETE NO ACTION;
+
+ALTER TABLE direct_channels
+    ADD CONSTRAINT fk_direct_channels_users_high FOREIGN KEY (user_high_id) REFERENCES users (id) ON DELETE NO ACTION;
+
+CREATE INDEX fk_direct_channels_users_high_idx ON direct_channels (user_high_id);
+
+ALTER TABLE direct_channels
+    ADD CONSTRAINT fk_direct_channels_channels FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE NO ACTION;
+
+ALTER TABLE direct_channels
+    ADD CONSTRAINT uk_direct_channels_user_low_user_high UNIQUE (user_low_id, user_high_id);
+
+ALTER TABLE direct_channels
+    ADD CONSTRAINT uk_direct_channels_channel UNIQUE (channel_id);
+
+ALTER TABLE direct_channels
+    ADD CONSTRAINT chk_direct_channels_user_order CHECK (user_low_id <= user_high_id);
 
 ALTER TABLE messages
     ADD CONSTRAINT fk_messages_channels FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE NO ACTION;

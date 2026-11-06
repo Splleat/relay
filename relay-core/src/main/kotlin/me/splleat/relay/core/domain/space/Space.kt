@@ -10,14 +10,14 @@ import org.hibernate.type.SqlTypes
 @Table(name = "spaces")
 open class Space private constructor(
     name: String,
-    type: SpaceType,
+    spaceType: SpaceType,
 ) : SoftDeletableEntity() {
 
     var name: String = name
         protected set
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
-    var type: SpaceType = type
+    var spaceType: SpaceType = spaceType
         protected set
 
     companion object {

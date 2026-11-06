@@ -39,7 +39,7 @@ class UserRegisterUseCaseTest {
 
         val space = spaceRepository.findByIdOrNull(spaceMember.spaceId)
 
-        assertThat(space?.type)
+        assertThat(space?.spaceType)
             .isEqualTo(SpaceType.PERSONAL)
     }
 }
