@@ -21,9 +21,9 @@ open class Space private constructor(
         protected set
 
     companion object {
-        fun createPersonal(name: String) =
-            Space(name, SpaceType.PERSONAL)
-        fun createPublic(name: String) =
+        fun createPersonal() =
+            Space("개인 스페이스", SpaceType.PERSONAL)
+        fun createShared(name: String) =
             Space(name, SpaceType.SHARED)
     }
 }
