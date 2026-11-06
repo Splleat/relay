@@ -61,6 +61,7 @@ CREATE TABLE spaces
 (
     id         BIGINT      NOT NULL,
     name       VARCHAR(50) NOT NULL,
+    type       VARCHAR(50) NOT NULL,
     created_at DATETIME(6)    NOT NULL,
     updated_at DATETIME(6) NULL,
     deleted_at DATETIME(6) NULL,
