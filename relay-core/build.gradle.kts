@@ -16,6 +16,7 @@ tasks.jar {
 }
 
 dependencies {
+    testFixturesApi("org.springframework:spring-jdbc")
     testFixturesApi("org.springframework.boot:spring-boot-testcontainers")
     testFixturesApi("org.testcontainers:testcontainers-mysql")
     testFixturesApi("org.testcontainers:testcontainers-junit-jupiter")

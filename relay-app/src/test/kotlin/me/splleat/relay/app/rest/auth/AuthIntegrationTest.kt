@@ -4,15 +4,15 @@ import jakarta.servlet.http.Cookie
 import me.splleat.relay.app.rest.auth.dto.UserLoginRequest
 import me.splleat.relay.app.rest.user.dto.UserRegisterRequest
 import me.splleat.relay.core.application.user.UserLoginUseCase
-import me.splleat.relay.core.domain.user.UserRepository
 import me.splleat.relay.core.support.IntegrationTest
+import me.splleat.relay.core.support.RedisTestContainer
 import me.splleat.relay.support.postJson
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.post
 import tools.jackson.module.kotlin.jsonMapper
 
 @IntegrationTest
+@Import(RedisTestContainer::class)
 @AutoConfigureMockMvc
 class AuthIntegrationTest {
 
@@ -30,9 +31,6 @@ class AuthIntegrationTest {
     @Autowired
     private lateinit var userLoginUseCase: UserLoginUseCase
 
-    @Autowired
-    private lateinit var userRepository: UserRepository
-
     @BeforeEach
     fun setUp() {
         val request = UserRegisterRequest("테스트", "test@test.com", "password")
@@ -41,11 +39,6 @@ class AuthIntegrationTest {
             .andExpect {
                 status { isCreated() }
             }
-    }
-
-    @AfterEach
-    fun tearDown() {
-        userRepository.deleteAll()
     }
 
     @Test
