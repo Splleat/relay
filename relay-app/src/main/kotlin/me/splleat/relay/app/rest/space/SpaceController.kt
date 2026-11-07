@@ -1,6 +1,7 @@
 package me.splleat.relay.app.rest.space
 
 import jakarta.validation.Valid
+import me.splleat.relay.app.rest.createLocation
 import me.splleat.relay.app.rest.space.dto.SpaceCreateRequest
 import me.splleat.relay.app.rest.space.dto.SpaceListResponse
 import me.splleat.relay.app.rest.space.dto.SpaceResponse
@@ -25,10 +26,7 @@ class SpaceController(
         @AuthenticationPrincipal userId: Long,
     ): ResponseEntity<Void> {
         val spaceId = spaceCreateUseCase.execute(request.toCommand(userId))
-        val location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(spaceId)
-            .toUri()
+        val location = createLocation(spaceId)
 
         return ResponseEntity.created(location).build()
     }

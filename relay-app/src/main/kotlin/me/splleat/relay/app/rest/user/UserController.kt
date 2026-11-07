@@ -1,6 +1,7 @@
 package me.splleat.relay.app.rest.user
 
 import jakarta.validation.Valid
+import me.splleat.relay.app.rest.createLocation
 import me.splleat.relay.app.rest.user.dto.UserRegisterRequest
 import me.splleat.relay.app.rest.user.dto.UserResponse
 import me.splleat.relay.core.application.user.UserGetMeUseCase
@@ -22,10 +23,7 @@ class UserController(
     @PostMapping("/users")
     fun register(@Valid @RequestBody request: UserRegisterRequest): ResponseEntity<Void> {
         val userId = userRegisterUseCase.execute(request.toCommand())
-        val location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(userId)
-            .toUri()
+        val location = createLocation(userId)
 
         return ResponseEntity.created(location)
             .build()
