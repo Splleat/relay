@@ -14,7 +14,7 @@ class SpaceGetUseCase(
 
     @Transactional(readOnly = true)
     fun execute(userId: Long, spaceId: Long): SpaceResult {
-        spaceMemberService.validateSpaceMember(userId, spaceId)
+        spaceMemberService.getSpaceMember(userId, spaceId)
 
         val space = spaceService.getSpace(spaceId)
 

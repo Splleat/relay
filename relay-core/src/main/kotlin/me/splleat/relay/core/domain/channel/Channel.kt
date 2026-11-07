@@ -25,10 +25,10 @@ open class Channel private constructor(
         protected set
 
     companion object {
-        fun createDirectChannel(spaceId: Long) =
-            Channel(spaceId, null, ChannelType.DM)
+        fun createDirectChannel() =
+            Channel(null, null, ChannelType.DM)
 
-        fun createPublicChannel(spaceId: Long, name: String) =
+        fun createSpaceChannel(spaceId: Long, name: String) =
             Channel(spaceId, name, ChannelType.SPACE)
     }
 }

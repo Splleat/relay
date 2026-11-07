@@ -22,9 +22,20 @@ class SpaceMemberService(
     }
 
     @Transactional(readOnly = true)
-    fun validateSpaceMember(userId: Long, spaceId: Long) {
-        if (!repository.existsByUserIdAndSpaceId(userId, spaceId)) {
-            throw BusinessException(SpaceErrorCode.NOT_FOUND)
+    fun getSpaceMember(userId: Long, spaceId: Long): SpaceMember {
+        return repository.findByUserIdAndSpaceId(userId, spaceId)
+            ?: throw BusinessException(SpaceMemberErrorCode.NOT_FOUND)
+    }
+
+    @Transactional(readOnly = true)
+    fun getAllUserIds(spaceId: Long): List<Long> {
+        return repository.findAllUserIdsBySpaceId(spaceId)
+    }
+
+    @Transactional(readOnly = true)
+    fun validShareSpace(userId: Long, targetId: Long) {
+        if (!repository.existsSharedSpace(userId, targetId)) {
+            throw BusinessException(SpaceMemberErrorCode.NOT_FOUND)
         }
     }
 }

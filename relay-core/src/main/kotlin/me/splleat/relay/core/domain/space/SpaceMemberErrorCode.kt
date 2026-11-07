@@ -8,8 +8,8 @@ enum class SpaceMemberErrorCode(
     override val message: String,
 ) : ErrorCode {
 
-    ALREADY_EXISTS(ErrorType.CONFLICT, "이미 스페이스에 존재하는 사용자입니다.")
-    ;
+    NOT_FOUND(ErrorType.NOT_FOUND, "해당 스페이스 사용자가 아닙니다."),
+    FORBIDDEN(ErrorType.FORBIDDEN, "접근 권한이 없습니다.");
 
     override val code: String
         get() = "SPACE_MEMBER_$name"
