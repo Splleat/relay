@@ -29,4 +29,9 @@ class UserService(
         return userRepository.findByIdOrNull(userId)
             ?: throw BusinessException(UserErrorCode.NOT_FOUND)
     }
+
+    @Transactional(readOnly = true)
+    fun getUsers(userIds: List<Long>): List<User> {
+        return userRepository.findAllById(userIds)
+    }
 }

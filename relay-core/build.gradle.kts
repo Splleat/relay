@@ -24,6 +24,7 @@ dependencies {
     testFixturesApi("io.mockk:mockk:1.14.11")
     testFixturesApi("io.mockk:mockk-bdd:1.14.11")
     testFixturesApi("com.ninja-squad:springmockk:5.0.1")
+    testFixturesImplementation("org.springframework:spring-jdbc")
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -34,4 +35,5 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.flywaydb:flyway-mysql")
+    testFixturesApi("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }

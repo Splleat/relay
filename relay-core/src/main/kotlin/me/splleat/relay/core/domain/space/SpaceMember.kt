@@ -2,6 +2,7 @@ package me.splleat.relay.core.domain.space
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
+import me.splleat.relay.core.common.BusinessException
 import me.splleat.relay.core.domain.BaseEntity
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
@@ -30,6 +31,12 @@ open class SpaceMember private constructor(
 
         fun createMember(userId: Long, spaceId: Long) =
             SpaceMember(userId, spaceId, SpaceRole.MEMBER)
+    }
+
+    fun validateOwner() {
+        if (spaceRole != SpaceRole.OWNER) {
+            throw BusinessException(SpaceMemberErrorCode.FORBIDDEN)
+        }
     }
 }
 
