@@ -1,4 +1,4 @@
-package me.splleat.relay.app.rest.auth
+package me.splleat.relay.app.security
 
 import jakarta.servlet.http.Cookie
 import me.splleat.relay.app.rest.auth.dto.UserLoginRequest
@@ -7,14 +7,14 @@ import me.splleat.relay.core.application.user.UserLoginUseCase
 import me.splleat.relay.core.support.IntegrationTest
 import me.splleat.relay.core.support.RedisTestContainer
 import me.splleat.relay.support.postJson
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
@@ -97,7 +97,7 @@ class AuthIntegrationTest {
             cookie(sessionCookie1)
         }
 
-        assertThat(sessionCookie1.value)
+        Assertions.assertThat(sessionCookie1.value)
             .isNotEqualTo(sessionCookie2.value)
         result.andExpect {
             status { isUnauthorized() }
@@ -132,7 +132,7 @@ class AuthIntegrationTest {
 
     private fun logout(sessionCookie: Cookie) {
         mockMvc.post("/api/v1/auth/logout") {
-            with(csrf())
+            with(SecurityMockMvcRequestPostProcessors.csrf())
             cookie(sessionCookie)
         }.andExpect {
             status { isNoContent() }

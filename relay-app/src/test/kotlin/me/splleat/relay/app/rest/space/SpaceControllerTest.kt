@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.Import
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
@@ -81,7 +80,7 @@ class SpaceControllerTest {
     @WithTestUser
     fun `스페이스 이름이 50자를 넘으면 400을 반환한다`() {
         // given
-        val request = SpaceCreateRequest(name = "spacespacespacespacespacespacespacespacespacespaces")
+        val request = SpaceCreateRequest("a".repeat(51))
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces", request)

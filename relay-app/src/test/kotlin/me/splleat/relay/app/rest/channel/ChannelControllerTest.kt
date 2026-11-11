@@ -169,7 +169,7 @@ class ChannelControllerTest {
 
         given { channelGetUseCase.execute(ChannelGetCommand(userId = 1L, channelId = channelId)) } returns channelResult
 
-        // when (GET 요청은 CSRF 토큰 제외)
+        // when
         val result = mockMvc.get("/api/v1/channels/$channelId")
 
         // then
@@ -185,7 +185,7 @@ class ChannelControllerTest {
 
     @Test
     fun `인증되지 않은 사용자가 채널 조회를 요청하면 401을 반환한다`() {
-        // when (GET 요청은 CSRF 토큰 제외)
+        // when
         val result = mockMvc.get("/api/v1/channels/10")
 
         // then
@@ -205,7 +205,7 @@ class ChannelControllerTest {
 
         given { channelGetUseCase.execute(any()) } throws BusinessException(ChannelErrorCode.NOT_FOUND)
 
-        // when (GET 요청은 CSRF 토큰 제외)
+        // when
         val result = mockMvc.get("/api/v1/channels/$channelId")
 
         // then
