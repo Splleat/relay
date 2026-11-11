@@ -11,7 +11,6 @@ import me.splleat.relay.core.application.space.SpaceListGetUseCase
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 @RestController
 class SpaceController(
@@ -24,7 +23,7 @@ class SpaceController(
     fun createSpace(
         @RequestBody @Valid request: SpaceCreateRequest,
         @AuthenticationPrincipal userId: Long,
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         val spaceId = spaceCreateUseCase.execute(request.toCommand(userId))
         val location = createLocation(spaceId)
 

@@ -38,4 +38,9 @@ class ChannelMemberService(
     fun getChannelMemberUserIds(channelId: Long): List<Long> {
         return repository.findUserIdsByChannelId(channelId)
     }
+
+    @Transactional(readOnly = true)
+    fun isChannelMember(userId: Long, channelId: Long): Boolean {
+        return repository.existsByUserIdAndChannelId(userId, channelId)
+    }
 }

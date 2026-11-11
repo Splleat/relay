@@ -26,5 +26,6 @@ abstract class BaseEntity {
     var updatedAt: LocalDateTime? = null
         protected set
 
-    fun requireId(): Long = checkNotNull(id) { "저장되지 않은 엔티티: ${this::class.simpleName}"}
+    fun requireId(): Long = checkNotNull(id) { "저장되지 않은 엔티티: ${this::class.simpleName}" }
+    fun requireCreatedAt(): LocalDateTime = checkNotNull(createdAt) { "저장되지 않은 엔티티: ${this::class.simpleName}" }
 }

@@ -22,7 +22,7 @@ class AuthController(
         @RequestBody @Valid request: UserLoginRequest,
         httpRequest: HttpServletRequest,
         httpResponse: HttpServletResponse,
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         val userId = userLoginUseCase.execute(request.toCommand())
 
         sessionService.saveSession(userId, httpRequest, httpResponse)

@@ -21,6 +21,8 @@ dependencies {
     implementation("org.springframework:spring-tx")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-session-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.springframework.security:spring-security-messaging")
 
     testImplementation(testFixtures(project(":relay-core")))
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")

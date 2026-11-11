@@ -24,6 +24,7 @@ dependencies {
     testFixturesApi("io.mockk:mockk:1.14.11")
     testFixturesApi("io.mockk:mockk-bdd:1.14.11")
     testFixturesApi("com.ninja-squad:springmockk:5.0.1")
+    testFixturesApi("io.kotest:kotest-assertions-core-jvm:6.2.6")
     testFixturesImplementation("org.springframework:spring-jdbc")
 
     implementation("org.springframework.boot:spring-boot-starter")

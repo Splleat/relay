@@ -35,7 +35,7 @@ class ChannelController(
         @PathVariable("space-id") spaceId: Long,
         @RequestBody @Valid request: SpaceChannelCreateRequest,
         @AuthenticationPrincipal userId: Long,
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         val channelId = spaceChannelCreateUseCase.execute(request.toCommand(userId, spaceId))
         val location = createLocation("/api/v1/channels/{id}", channelId)
 

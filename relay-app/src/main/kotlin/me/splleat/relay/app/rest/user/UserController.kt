@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 @RestController
 class UserController(
@@ -21,7 +20,7 @@ class UserController(
 ) {
 
     @PostMapping("/users")
-    fun register(@Valid @RequestBody request: UserRegisterRequest): ResponseEntity<Void> {
+    fun register(@Valid @RequestBody request: UserRegisterRequest): ResponseEntity<Unit> {
         val userId = userRegisterUseCase.execute(request.toCommand())
         val location = createLocation(userId)
 
