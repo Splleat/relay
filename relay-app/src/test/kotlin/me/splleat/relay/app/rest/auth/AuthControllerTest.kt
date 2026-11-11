@@ -6,9 +6,9 @@ import io.mockk.bdd.given
 import io.mockk.bdd.then
 import io.mockk.just
 import me.splleat.relay.app.common.SecurityConfig
-import me.splleat.relay.app.rest.auth.dto.UserLoginRequest
+import me.splleat.relay.app.rest.auth.dto.LoginRequest
 import me.splleat.relay.app.security.SessionService
-import me.splleat.relay.core.application.user.UserLoginUseCase
+import me.splleat.relay.core.application.user.LoginUseCase
 import me.splleat.relay.core.common.BusinessException
 import me.splleat.relay.core.domain.user.UserErrorCode
 import me.splleat.relay.support.postJson
@@ -29,15 +29,15 @@ class AuthControllerTest {
     private lateinit var sessionService: SessionService
 
     @MockkBean
-    private lateinit var userLoginUseCase: UserLoginUseCase
+    private lateinit var loginUseCase: LoginUseCase
 
     @Test
     fun `로그인을 성공하면 204를 반환한다`() {
         // given
-        val request = UserLoginRequest("test@test.com", "password")
+        val request = LoginRequest("test@test.com", "password")
         val expectedId = 1L
 
-        given { userLoginUseCase.execute(request.toCommand()) } returns expectedId
+        given { loginUseCase.execute(request.toCommand()) } returns expectedId
         given { sessionService.saveSession(expectedId, any(), any()) } just Runs
 
         // when
@@ -53,9 +53,9 @@ class AuthControllerTest {
     @Test
     fun `로그인이 실패하면 401을 반환한다`() {
         // given
-        val request = UserLoginRequest("test@test.com", "password")
+        val request = LoginRequest("test@test.com", "password")
 
-        given { userLoginUseCase.execute(request.toCommand()) } throws BusinessException(UserErrorCode.INVALID_CREDENTIALS)
+        given { loginUseCase.execute(request.toCommand()) } throws BusinessException(UserErrorCode.INVALID_CREDENTIALS)
 
         // when
         val result = mockMvc.postJson("/api/v1/auth/login", request)

@@ -4,13 +4,14 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.bdd.given
 import io.mockk.bdd.then
 import me.splleat.relay.app.common.SecurityConfig
-import me.splleat.relay.app.rest.space.dto.SpaceCreateRequest
-import me.splleat.relay.core.application.space.SpaceCreateUseCase
-import me.splleat.relay.core.application.space.SpaceGetUseCase
-import me.splleat.relay.core.application.space.SpaceListGetUseCase
-import me.splleat.relay.core.application.space.dto.SpaceCreateCommand
-import me.splleat.relay.core.application.space.dto.SpaceListResult
+import me.splleat.relay.app.rest.space.dto.CreateSpaceRequest
+import me.splleat.relay.core.application.space.CreateSpaceUseCase
+import me.splleat.relay.core.application.space.GetSpaceUseCase
+import me.splleat.relay.core.application.space.GetJoinedSpacesUseCase
+import me.splleat.relay.core.application.space.dto.CreateSpaceCommand
+import me.splleat.relay.core.application.space.dto.JoinedSpacesResult
 import me.splleat.relay.core.application.space.dto.SpaceResult
+import me.splleat.relay.core.application.space.dto.SpaceSummaryResult
 import me.splleat.relay.core.common.BusinessException
 import me.splleat.relay.core.domain.space.SpaceErrorCode
 import me.splleat.relay.core.domain.space.SpaceType
@@ -31,22 +32,22 @@ class SpaceControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @MockkBean
-    private lateinit var spaceCreateUseCase: SpaceCreateUseCase
+    private lateinit var createSpaceUseCase: CreateSpaceUseCase
 
     @MockkBean
-    private lateinit var spaceListGetUseCase: SpaceListGetUseCase
+    private lateinit var getJoinedSpacesUseCase: GetJoinedSpacesUseCase
 
     @MockkBean
-    private lateinit var spaceGetUseCase: SpaceGetUseCase
+    private lateinit var getSpaceUseCase: GetSpaceUseCase
 
     @Test
     @WithTestUser(id = 1L)
     fun `스페이스를 생성하면 201과 Location 헤더를 반환한다`() {
         // given
-        val request = SpaceCreateRequest(name = "테스트 스페이스")
+        val request = CreateSpaceRequest(name = "테스트 스페이스")
         val expectedSpaceId = 10L
 
-        given { spaceCreateUseCase.execute(SpaceCreateCommand(userId = 1L, name = "테스트 스페이스")) } returns expectedSpaceId
+        given { createSpaceUseCase.execute(CreateSpaceCommand(userId = 1L, name = "테스트 스페이스")) } returns expectedSpaceId
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces", request)
@@ -62,7 +63,7 @@ class SpaceControllerTest {
     @WithTestUser
     fun `스페이스 이름이 공백이면 400을 반환한다`() {
         // given
-        val request = SpaceCreateRequest(name = "")
+        val request = CreateSpaceRequest(name = "")
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces", request)
@@ -73,14 +74,14 @@ class SpaceControllerTest {
             jsonPath("$.code") { value("INVALID_INPUT") }
         }
 
-        then(exactly = 0) { spaceCreateUseCase.execute(any()) }
+        then(exactly = 0) { createSpaceUseCase.execute(any()) }
     }
 
     @Test
     @WithTestUser
     fun `스페이스 이름이 50자를 넘으면 400을 반환한다`() {
         // given
-        val request = SpaceCreateRequest("a".repeat(51))
+        val request = CreateSpaceRequest("a".repeat(51))
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces", request)
@@ -91,13 +92,13 @@ class SpaceControllerTest {
             jsonPath("$.code") { value("INVALID_INPUT") }
         }
 
-        then(exactly = 0) { spaceCreateUseCase.execute(any()) }
+        then(exactly = 0) { createSpaceUseCase.execute(any()) }
     }
 
     @Test
     fun `인증되지 않은 사용자가 스페이스 생성을 요청하면 401을 반환한다`() {
         // given
-        val request = SpaceCreateRequest(name = "테스트 스페이스")
+        val request = CreateSpaceRequest(name = "테스트 스페이스")
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces", request)
@@ -108,7 +109,7 @@ class SpaceControllerTest {
             jsonPath("$.code") { value("AUTH_UNAUTHENTICATED") }
         }
 
-        then(exactly = 0) { spaceCreateUseCase.execute(any()) }
+        then(exactly = 0) { createSpaceUseCase.execute(any()) }
     }
 
     @Test
@@ -116,11 +117,11 @@ class SpaceControllerTest {
     fun `내 스페이스 목록을 조회하면 200과 목록을 반환한다`() {
         // given
         val spaceList = listOf(
-            SpaceListResult(id = 1L, name = "개인 스페이스", type = SpaceType.PERSONAL),
-            SpaceListResult(id = 2L, name = "팀 스페이스", type = SpaceType.SHARED),
+            SpaceSummaryResult(id = 1L, name = "개인 스페이스", type = SpaceType.PERSONAL),
+            SpaceSummaryResult(id = 2L, name = "팀 스페이스", type = SpaceType.SHARED),
         )
 
-        given { spaceListGetUseCase.execute(1L) } returns spaceList
+        given { getJoinedSpacesUseCase.execute(1L) } returns JoinedSpacesResult(spaceList)
 
         // when
         val result = mockMvc.get("/api/v1/spaces")
@@ -128,12 +129,12 @@ class SpaceControllerTest {
         // then
         result.andExpect {
             status { isOk() }
-            jsonPath("$[0].id") { value(1L) }
-            jsonPath("$[0].name") { value("개인 스페이스") }
-            jsonPath("$[0].type") { value("PERSONAL") }
-            jsonPath("$[1].id") { value(2L) }
-            jsonPath("$[1].name") { value("팀 스페이스") }
-            jsonPath("$[1].type") { value("SHARED") }
+            jsonPath("$.spaces[0].id") { value(1L) }
+            jsonPath("$.spaces[0].name") { value("개인 스페이스") }
+            jsonPath("$.spaces[0].type") { value("PERSONAL") }
+            jsonPath("$.spaces[1].id") { value(2L) }
+            jsonPath("$.spaces[1].name") { value("팀 스페이스") }
+            jsonPath("$.spaces[1].type") { value("SHARED") }
         }
     }
 
@@ -148,7 +149,7 @@ class SpaceControllerTest {
             jsonPath("$.code") { value("AUTH_UNAUTHENTICATED") }
         }
 
-        then(exactly = 0) { spaceListGetUseCase.execute(any()) }
+        then(exactly = 0) { getJoinedSpacesUseCase.execute(any()) }
     }
 
     @Test
@@ -158,7 +159,7 @@ class SpaceControllerTest {
         val spaceId = 10L
         val spaceResult = SpaceResult(id = spaceId, name = "팀 스페이스", type = SpaceType.SHARED)
 
-        given { spaceGetUseCase.execute(1L, spaceId) } returns spaceResult
+        given { getSpaceUseCase.execute(1L, spaceId) } returns spaceResult
 
         // when
         val result = mockMvc.get("/api/v1/spaces/$spaceId")
@@ -178,7 +179,7 @@ class SpaceControllerTest {
         // given
         val spaceId = 999L
 
-        given { spaceGetUseCase.execute(1L, spaceId) } throws BusinessException(SpaceErrorCode.NOT_FOUND)
+        given { getSpaceUseCase.execute(1L, spaceId) } throws BusinessException(SpaceErrorCode.NOT_FOUND)
 
         // when
         val result = mockMvc.get("/api/v1/spaces/$spaceId")

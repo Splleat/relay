@@ -1,9 +1,9 @@
 package me.splleat.relay.app.security
 
 import jakarta.servlet.http.Cookie
-import me.splleat.relay.app.rest.auth.dto.UserLoginRequest
-import me.splleat.relay.app.rest.user.dto.UserRegisterRequest
-import me.splleat.relay.core.application.user.UserLoginUseCase
+import me.splleat.relay.app.rest.auth.dto.LoginRequest
+import me.splleat.relay.app.rest.user.dto.SignUpRequest
+import me.splleat.relay.core.application.user.LoginUseCase
 import me.splleat.relay.core.support.IntegrationTest
 import me.splleat.relay.core.support.RedisTestContainer
 import me.splleat.relay.support.postJson
@@ -29,11 +29,11 @@ class AuthIntegrationTest {
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var userLoginUseCase: UserLoginUseCase
+    private lateinit var loginUseCase: LoginUseCase
 
     @BeforeEach
     fun setUp() {
-        val request = UserRegisterRequest("테스트", "test@test.com", "password")
+        val request = SignUpRequest("테스트", "test@test.com", "password")
 
         mockMvc.postJson("/api/v1/users", request)
             .andExpect {
@@ -107,7 +107,7 @@ class AuthIntegrationTest {
     @Test
     fun `CSRF 토큰 없이 상태 변경을 요청하면 403을 반환한다`() {
         // when
-        val loginRequest = UserLoginRequest("test@test.com", "password")
+        val loginRequest = LoginRequest("test@test.com", "password")
         val result = mockMvc.post("/api/v1/auth/login") {
             contentType = MediaType.APPLICATION_JSON
             content = jsonMapper().writeValueAsString(loginRequest)
@@ -120,7 +120,7 @@ class AuthIntegrationTest {
     }
 
     private fun login(existingSession: Cookie? = null): Cookie {
-        val loginRequest = UserLoginRequest("test@test.com", "password")
+        val loginRequest = LoginRequest("test@test.com", "password")
         val loginResponse = mockMvc.postJson("/api/v1/auth/login", loginRequest) {
             existingSession?.let { cookie(it) }
         }.andReturn()

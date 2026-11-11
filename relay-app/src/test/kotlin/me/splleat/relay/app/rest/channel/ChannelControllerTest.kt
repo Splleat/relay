@@ -4,16 +4,16 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.bdd.given
 import io.mockk.bdd.then
 import me.splleat.relay.app.common.SecurityConfig
-import me.splleat.relay.app.rest.channel.dto.DirectChannelGetOrCreateRequest
-import me.splleat.relay.app.rest.channel.dto.SpaceChannelCreateRequest
-import me.splleat.relay.core.application.channel.ChannelGetUseCase
-import me.splleat.relay.core.application.channel.DirectChannelGetOrCreateUseCase
-import me.splleat.relay.core.application.channel.SpaceChannelCreateUseCase
+import me.splleat.relay.app.rest.channel.dto.OpenDirectChannelRequest
+import me.splleat.relay.app.rest.channel.dto.CreateSpaceChannelRequest
+import me.splleat.relay.core.application.channel.GetChannelUseCase
+import me.splleat.relay.core.application.channel.OpenDirectChannelUseCase
+import me.splleat.relay.core.application.channel.CreateSpaceChannelUseCase
 import me.splleat.relay.core.application.channel.dto.ChannelMemberResult
 import me.splleat.relay.core.application.channel.dto.ChannelResult
-import me.splleat.relay.core.application.channel.dto.DirectChannelGetOrCreateCommand
-import me.splleat.relay.core.application.channel.dto.SpaceChannelCreateCommand
-import me.splleat.relay.core.application.channel.dto.ChannelGetCommand
+import me.splleat.relay.core.application.channel.dto.OpenDirectChannelCommand
+import me.splleat.relay.core.application.channel.dto.CreateSpaceChannelCommand
+import me.splleat.relay.core.application.channel.dto.GetChannelCommand
 import me.splleat.relay.core.common.BusinessException
 import me.splleat.relay.core.domain.channel.ChannelErrorCode
 import me.splleat.relay.core.domain.channel.ChannelType
@@ -35,22 +35,22 @@ class ChannelControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @MockkBean
-    private lateinit var directChannelGetOrCreateUseCase: DirectChannelGetOrCreateUseCase
+    private lateinit var openDirectChannelUseCase: OpenDirectChannelUseCase
 
     @MockkBean
-    private lateinit var spaceChannelCreateUseCase: SpaceChannelCreateUseCase
+    private lateinit var createSpaceChannelUseCase: CreateSpaceChannelUseCase
 
     @MockkBean
-    private lateinit var channelGetUseCase: ChannelGetUseCase
+    private lateinit var getChannelUseCase: GetChannelUseCase
 
     @Test
     @WithTestUser(id = 1L)
     fun `DM 채널을 가져오거나 생성하면 200과 channelId를 반환한다`() {
         // given
-        val request = DirectChannelGetOrCreateRequest(targetId = 2L)
+        val request = OpenDirectChannelRequest(targetId = 2L)
         val expectedChannelId = 100L
 
-        given { directChannelGetOrCreateUseCase.execute(DirectChannelGetOrCreateCommand(userId = 1L, targetId = 2L)) } returns expectedChannelId
+        given { openDirectChannelUseCase.execute(OpenDirectChannelCommand(userId = 1L, targetId = 2L)) } returns expectedChannelId
 
         // when
         val result = mockMvc.postJson("/api/v1/dms", request)
@@ -65,7 +65,7 @@ class ChannelControllerTest {
     @Test
     fun `인증되지 않은 사용자가 DM 생성을 요청하면 401을 반환한다`() {
         // given
-        val request = DirectChannelGetOrCreateRequest(targetId = 2L)
+        val request = OpenDirectChannelRequest(targetId = 2L)
 
         // when
         val result = mockMvc.postJson("/api/v1/dms", request)
@@ -76,7 +76,7 @@ class ChannelControllerTest {
             jsonPath("$.code") { value("AUTH_UNAUTHENTICATED") }
         }
 
-        then(exactly = 0) { directChannelGetOrCreateUseCase.execute(any()) }
+        then(exactly = 0) { openDirectChannelUseCase.execute(any()) }
     }
 
     @Test
@@ -84,10 +84,10 @@ class ChannelControllerTest {
     fun `스페이스 채널을 생성하면 201과 채널 Location 헤더를 반환한다`() {
         // given
         val spaceId = 1L
-        val request = SpaceChannelCreateRequest(channelName = "일반")
+        val request = CreateSpaceChannelRequest(channelName = "일반")
         val expectedChannelId = 10L
 
-        given { spaceChannelCreateUseCase.execute(SpaceChannelCreateCommand(userId = 1L, spaceId = spaceId, channelName = "일반")) } returns expectedChannelId
+        given { createSpaceChannelUseCase.execute(CreateSpaceChannelCommand(userId = 1L, spaceId = spaceId, channelName = "일반")) } returns expectedChannelId
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces/$spaceId/channels", request)
@@ -103,7 +103,7 @@ class ChannelControllerTest {
     @WithTestUser
     fun `스페이스 채널 이름이 공백이면 400을 반환한다`() {
         // given
-        val request = SpaceChannelCreateRequest(channelName = "")
+        val request = CreateSpaceChannelRequest(channelName = "")
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces/1/channels", request)
@@ -114,13 +114,13 @@ class ChannelControllerTest {
             jsonPath("$.code") { value("INVALID_INPUT") }
         }
 
-        then(exactly = 0) { spaceChannelCreateUseCase.execute(any()) }
+        then(exactly = 0) { createSpaceChannelUseCase.execute(any()) }
     }
 
     @Test
     fun `인증되지 않은 사용자가 스페이스 채널 생성을 요청하면 401을 반환한다`() {
         // given
-        val request = SpaceChannelCreateRequest(channelName = "일반")
+        val request = CreateSpaceChannelRequest(channelName = "일반")
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces/1/channels", request)
@@ -131,7 +131,7 @@ class ChannelControllerTest {
             jsonPath("$.code") { value("AUTH_UNAUTHENTICATED") }
         }
 
-        then(exactly = 0) { spaceChannelCreateUseCase.execute(any()) }
+        then(exactly = 0) { createSpaceChannelUseCase.execute(any()) }
     }
 
     @Test
@@ -139,9 +139,9 @@ class ChannelControllerTest {
     fun `스페이스 관리자가 아닌 사용자가 채널을 생성하려 하면 403을 반환한다`() {
         // given
         val spaceId = 1L
-        val request = SpaceChannelCreateRequest(channelName = "일반")
+        val request = CreateSpaceChannelRequest(channelName = "일반")
 
-        given { spaceChannelCreateUseCase.execute(any()) } throws BusinessException(SpaceMemberErrorCode.FORBIDDEN)
+        given { createSpaceChannelUseCase.execute(any()) } throws BusinessException(SpaceMemberErrorCode.FORBIDDEN)
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces/$spaceId/channels", request)
@@ -167,7 +167,7 @@ class ChannelControllerTest {
             )
         )
 
-        given { channelGetUseCase.execute(ChannelGetCommand(userId = 1L, channelId = channelId)) } returns channelResult
+        given { getChannelUseCase.execute(GetChannelCommand(userId = 1L, channelId = channelId)) } returns channelResult
 
         // when
         val result = mockMvc.get("/api/v1/channels/$channelId")
@@ -194,7 +194,7 @@ class ChannelControllerTest {
             jsonPath("$.code") { value("AUTH_UNAUTHENTICATED") }
         }
 
-        then(exactly = 0) { channelGetUseCase.execute(any()) }
+        then(exactly = 0) { getChannelUseCase.execute(any()) }
     }
 
     @Test
@@ -203,7 +203,7 @@ class ChannelControllerTest {
         // given
         val channelId = 999L
 
-        given { channelGetUseCase.execute(any()) } throws BusinessException(ChannelErrorCode.NOT_FOUND)
+        given { getChannelUseCase.execute(any()) } throws BusinessException(ChannelErrorCode.NOT_FOUND)
 
         // when
         val result = mockMvc.get("/api/v1/channels/$channelId")
