@@ -2,30 +2,30 @@ package me.splleat.relay.app.rest.channel
 
 import jakarta.validation.Valid
 import me.splleat.relay.app.rest.channel.dto.ChannelResponse
-import me.splleat.relay.app.rest.channel.dto.DirectChannelGetOrCreateRequest
-import me.splleat.relay.app.rest.channel.dto.SpaceChannelCreateRequest
+import me.splleat.relay.app.rest.channel.dto.OpenDirectChannelRequest
+import me.splleat.relay.app.rest.channel.dto.CreateSpaceChannelRequest
 import me.splleat.relay.app.rest.createLocation
-import me.splleat.relay.core.application.channel.ChannelGetUseCase
-import me.splleat.relay.core.application.channel.DirectChannelGetOrCreateUseCase
-import me.splleat.relay.core.application.channel.SpaceChannelCreateUseCase
-import me.splleat.relay.core.application.channel.dto.ChannelGetCommand
+import me.splleat.relay.core.application.channel.GetChannelUseCase
+import me.splleat.relay.core.application.channel.OpenDirectChannelUseCase
+import me.splleat.relay.core.application.channel.CreateSpaceChannelUseCase
+import me.splleat.relay.core.application.channel.dto.GetChannelCommand
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
 class ChannelController(
-    private val directChannelGetOrCreateUseCase: DirectChannelGetOrCreateUseCase,
-    private val spaceChannelCreateUseCase: SpaceChannelCreateUseCase,
-    private val channelGetUseCase: ChannelGetUseCase,
+    private val openDirectChannelUseCase: OpenDirectChannelUseCase,
+    private val createSpaceChannelUseCase: CreateSpaceChannelUseCase,
+    private val getChannelUseCase: GetChannelUseCase,
 ) {
 
     @PostMapping("/dms")
-    fun getOrCreateDirectChannel(
-        @RequestBody @Valid request: DirectChannelGetOrCreateRequest,
+    fun openDirectChannel(
+        @RequestBody @Valid request: OpenDirectChannelRequest,
         @AuthenticationPrincipal userId: Long,
     ): ResponseEntity<Long> {
-        val channelId = directChannelGetOrCreateUseCase.execute(request.toCommand(userId))
+        val channelId = openDirectChannelUseCase.execute(request.toCommand(userId))
 
         return ResponseEntity.ok(channelId)
     }
@@ -33,10 +33,10 @@ class ChannelController(
     @PostMapping("/spaces/{space-id}/channels")
     fun createSpaceChannel(
         @PathVariable("space-id") spaceId: Long,
-        @RequestBody @Valid request: SpaceChannelCreateRequest,
+        @RequestBody @Valid request: CreateSpaceChannelRequest,
         @AuthenticationPrincipal userId: Long,
     ): ResponseEntity<Unit> {
-        val channelId = spaceChannelCreateUseCase.execute(request.toCommand(userId, spaceId))
+        val channelId = createSpaceChannelUseCase.execute(request.toCommand(userId, spaceId))
         val location = createLocation("/api/v1/channels/{id}", channelId)
 
         return ResponseEntity.created(location).build()
@@ -47,7 +47,7 @@ class ChannelController(
         @PathVariable("channel-id") channelId: Long,
         @AuthenticationPrincipal userId: Long,
     ): ResponseEntity<ChannelResponse> {
-        val result = channelGetUseCase.execute(ChannelGetCommand(userId, channelId))
+        val result = getChannelUseCase.execute(GetChannelCommand(userId, channelId))
 
         return ResponseEntity.ok(ChannelResponse.from(result))
     }

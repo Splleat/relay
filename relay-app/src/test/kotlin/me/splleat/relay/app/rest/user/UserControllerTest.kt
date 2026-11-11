@@ -4,9 +4,9 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.bdd.given
 import io.mockk.bdd.then
 import me.splleat.relay.app.common.SecurityConfig
-import me.splleat.relay.app.rest.user.dto.UserRegisterRequest
-import me.splleat.relay.core.application.user.UserGetMeUseCase
-import me.splleat.relay.core.application.user.UserRegisterUseCase
+import me.splleat.relay.app.rest.user.dto.SignUpRequest
+import me.splleat.relay.core.application.user.GetMyProfileUseCase
+import me.splleat.relay.core.application.user.SignUpUseCase
 import me.splleat.relay.core.application.user.dto.UserResult
 import me.splleat.relay.core.common.BusinessException
 import me.splleat.relay.core.domain.user.UserErrorCode
@@ -28,18 +28,18 @@ class UserControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @MockkBean
-    private lateinit var userRegisterUseCase: UserRegisterUseCase
+    private lateinit var signUpUseCase: SignUpUseCase
 
     @MockkBean
-    private lateinit var userGetMeUseCase: UserGetMeUseCase
+    private lateinit var getMyProfileUseCase: GetMyProfileUseCase
 
     @Test
     fun `사용자를 등록하면 201을 반환한다`() {
         // given
-        val request = UserRegisterRequest("테스트", "test@test.com", "password")
+        val request = SignUpRequest("테스트", "test@test.com", "password")
         val expectedId = 1L
 
-        given { userRegisterUseCase.execute(request.toCommand()) } returns expectedId
+        given { signUpUseCase.execute(request.toCommand()) } returns expectedId
 
         // when
         val result = mockMvc.postJson("/api/v1/users", request)
@@ -54,9 +54,9 @@ class UserControllerTest {
     @Test
     fun `이미 사용 중인 이메일로 사용자를 등록하면 409를 반환한다`() {
         // given
-        val request = UserRegisterRequest("테스트", "test@test.com", "password")
+        val request = SignUpRequest("테스트", "test@test.com", "password")
 
-        given { userRegisterUseCase.execute(any()) } throws BusinessException(UserErrorCode.EMAIL_DUPLICATED)
+        given { signUpUseCase.execute(any()) } throws BusinessException(UserErrorCode.EMAIL_DUPLICATED)
 
         // when
         val result = mockMvc.postJson("/api/v1/users", request)
@@ -71,7 +71,7 @@ class UserControllerTest {
     @Test
     fun `잘못된 이메일 형식으로 사용자를 등록하면 400을 반환한다`() {
         // given
-        val request = UserRegisterRequest("테스트", "invalid-email", "password")
+        val request = SignUpRequest("테스트", "invalid-email", "password")
 
         // when
         val result = mockMvc.postJson("/api/v1/users", request)
@@ -81,7 +81,7 @@ class UserControllerTest {
             status { isBadRequest() }
         }
 
-        then(exactly = 0) { userRegisterUseCase.execute(any()) }
+        then(exactly = 0) { signUpUseCase.execute(any()) }
     }
 
     @Test
@@ -108,7 +108,7 @@ class UserControllerTest {
         // given
         val userResult = UserResult("테스트", "test@test.com", "이미지", "상태 메시지")
 
-        given { userGetMeUseCase.execute(any()) } returns userResult
+        given { getMyProfileUseCase.execute(any()) } returns userResult
 
         // when
         val result = mockMvc.get("/api/v1/users/me") {
