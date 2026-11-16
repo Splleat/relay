@@ -5,14 +5,17 @@ import './index.css';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { LoginPage } from './pages/LoginPage.tsx';
 import { SignUpPage } from './pages/SignUpPage.tsx';
+import { RequireAuth } from './components/RequireAuth.tsx';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<App />}></Route>
                 <Route path="login" element={<LoginPage />}></Route>
                 <Route path="signup" element={<SignUpPage />}></Route>
+                <Route element={<RequireAuth />}>
+                    <Route path="/" element={<App />}></Route>
+                </Route>
             </Routes>
         </BrowserRouter>
     </StrictMode>,
