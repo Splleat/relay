@@ -1,31 +1,11 @@
+import { ApiError, type ApiErrorResponse } from './errors.ts';
+
 const BASE_URL = '/api/v1';
 
 let csrfToken: string | null = null;
 
 export interface CsrfTokenResponse {
     token: string;
-}
-
-interface ApiErrorResponse {
-    code: string;
-    message: string;
-    errors: FieldErrorDetail[];
-}
-
-interface FieldErrorDetail {
-    field: string;
-    message: string;
-}
-
-export class ApiError extends Error {
-    status: number;
-    code: string;
-
-    constructor(status: number, code: string, message: string) {
-        super(message);
-        this.status = status;
-        this.code = code;
-    }
 }
 
 export async function fetchApi<T>(
