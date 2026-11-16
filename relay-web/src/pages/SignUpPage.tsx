@@ -18,7 +18,9 @@ export function SignUpPage() {
 
         try {
             await signUp({ email, name, password });
+
             navigate('/login');
+
             return { error: null };
         } catch (error) {
             const errorMessage = getErrorMessage(error);

@@ -1,73 +1,65 @@
-import { type ChangeEvent, type SubmitEvent, useState } from 'react';
+import { useActionState } from 'react';
 import { login } from '../api/auth.ts';
 import { useNavigate } from 'react-router';
 import { getErrorMessage } from '../api/errors.ts';
 
+type LoginState = { error: string | null };
+
 export function LoginPage() {
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-    };
-
-    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-    };
-
-    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (!email.trim()) {
-            setError('이메일을 입력해주세요.');
-            return;
-        }
-
-        if (!password.trim()) {
-            setError('비밀번호를 입력해주세요.');
-            return;
-        }
+    const loginAction = async (
+        _prevState: LoginState,
+        formData: FormData,
+    ): Promise<LoginState> => {
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
 
         try {
             await login({ email, password });
 
             navigate('/');
+
+            return { error: null };
         } catch (error) {
             const errorMessage = getErrorMessage(error);
 
-            setError(errorMessage);
+            return { error: errorMessage };
         }
     };
 
+    const [state, formAction, isPending] = useActionState(loginAction, {
+        error: null,
+    });
+
     return (
         <div>
-            <form onSubmit={handleSubmit}>
+            <form action={formAction}>
                 <div className="flex flex-col gap-1">
                     <div className="flex flex-row gap-2">
                         <label htmlFor="email">이메일</label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={handleEmailChange}
-                            required
-                        />
+                        <input id="email" name="email" type="email" required />
                     </div>
                     <div className="flex flex-row gap-2">
                         <label htmlFor="password">비밀번호</label>
                         <input
                             id="password"
+                            name="password"
                             type="password"
-                            value={password}
-                            onChange={handlePasswordChange}
                             required
                         />
                     </div>
-                    {error && <p className="text-red-500">{error}</p>}
+                    {state.error && (
+                        <p className="text-red-500">{state.error}</p>
+                    )}
                 </div>
-                <button type="submit">로그인</button>
+                {isPending ? (
+                    <button type="submit" disabled>
+                        로그인 중...
+                    </button>
+                ) : (
+                    <button type="submit">로그인</button>
+                )}
             </form>
         </div>
     );
