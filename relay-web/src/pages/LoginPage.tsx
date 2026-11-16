@@ -53,13 +53,9 @@ export function LoginPage() {
                         <p className="text-red-500">{state.error}</p>
                     )}
                 </div>
-                {isPending ? (
-                    <button type="submit" disabled>
-                        로그인 중...
-                    </button>
-                ) : (
-                    <button type="submit">로그인</button>
-                )}
+                <button type="submit" disabled={isPending}>
+                    {isPending ? '로그인 중...' : '로그인'}
+                </button>
             </form>
         </div>
     );

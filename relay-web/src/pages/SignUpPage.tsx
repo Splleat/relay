@@ -58,13 +58,9 @@ export function SignUpPage() {
                         <p className="text-red-500">{state.error}</p>
                     )}
                 </div>
-                {isPending ? (
-                    <button type="submit" disabled>
-                        회원가입 중...
-                    </button>
-                ) : (
-                    <button type="submit">회원가입</button>
-                )}
+                <button type="submit" disabled={isPending}>
+                    {isPending ? '회원가입 중...' : '회원가입'}
+                </button>
             </form>
         </div>
     );
