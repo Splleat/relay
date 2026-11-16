@@ -22,6 +22,7 @@ class SecurityConfig(
             authorizeHttpRequests {
                 authorize("/api/v1/auth/login", permitAll)
                 authorize("/api/v1/users", permitAll)
+                authorize("/api/v1/auth/csrf", permitAll)
                 authorize(anyRequest, authenticated)
             }
             logout {

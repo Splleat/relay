@@ -1,5 +1,11 @@
 const BASE_URL = '/api/v1';
 
+let csrfToken: string | null = null;
+
+export interface CsrfTokenResponse {
+    token: string;
+}
+
 interface ApiErrorResponse {
     code: string;
     message: string;
@@ -32,6 +38,11 @@ export async function fetchApi<T>(
     const reqBody = body ? JSON.stringify(body) : null;
     const headers = new Headers();
 
+    if (method !== 'GET') {
+        const csrfToken = await getCsrfToken();
+        headers.set('X-CSRF-TOKEN', csrfToken);
+    }
+
     if (body) headers.set('Content-Type', 'application/json');
 
     const res = await fetch(url, {
@@ -53,4 +64,20 @@ export async function fetchApi<T>(
     const { code, message }: ApiErrorResponse = JSON.parse(resBody);
 
     throw new ApiError(res.status, code, message);
+}
+
+async function issueCsrfToken() {
+    const data = await fetchApi<CsrfTokenResponse>('/auth/csrf');
+
+    csrfToken = data.token;
+
+    return data.token;
+}
+
+export async function getCsrfToken() {
+    return csrfToken ? csrfToken : await issueCsrfToken();
+}
+
+export function clearCsrfToken() {
+    csrfToken = null;
 }
