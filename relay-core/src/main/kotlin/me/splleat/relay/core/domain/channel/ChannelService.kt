@@ -40,4 +40,9 @@ class ChannelService(
         return channelRepository.findByIdOrNull(channelId)
             ?: throw BusinessException(ChannelErrorCode.NOT_FOUND)
     }
+
+    @Transactional(readOnly = true)
+    fun getSpaceChannels(spaceId: Long): List<Channel> {
+        return channelRepository.findAllBySpaceIdOrderByIdAsc(spaceId)
+    }
 }

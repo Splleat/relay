@@ -10,6 +10,7 @@ import me.splleat.relay.core.application.space.GetSpaceUseCase
 import me.splleat.relay.core.application.space.GetJoinedSpacesUseCase
 import me.splleat.relay.core.application.space.dto.CreateSpaceCommand
 import me.splleat.relay.core.application.space.dto.JoinedSpacesResult
+import me.splleat.relay.core.application.space.dto.SpaceChannelSummaryResult
 import me.splleat.relay.core.application.space.dto.SpaceResult
 import me.splleat.relay.core.application.space.dto.SpaceSummaryResult
 import me.splleat.relay.core.common.BusinessException
@@ -157,7 +158,11 @@ class SpaceControllerTest {
     fun `스페이스 단건을 조회하면 200과 스페이스 정보를 반환한다`() {
         // given
         val spaceId = 10L
-        val spaceResult = SpaceResult(id = spaceId, name = "팀 스페이스", type = SpaceType.SHARED)
+        val channelList = listOf(
+            SpaceChannelSummaryResult(id = 1L, name = "스페이스 채널1"),
+            SpaceChannelSummaryResult(id = 2L, name = "스페이스 채널2"),
+        )
+        val spaceResult = SpaceResult(id = spaceId, name = "팀 스페이스", type = SpaceType.SHARED, channelList)
 
         given { getSpaceUseCase.execute(1L, spaceId) } returns spaceResult
 
@@ -170,6 +175,10 @@ class SpaceControllerTest {
             jsonPath("$.id") { value(spaceId) }
             jsonPath("$.name") { value("팀 스페이스") }
             jsonPath("$.type") { value("SHARED") }
+            jsonPath("$.channels[0].id") {value(1L)}
+            jsonPath("$.channels[0].name") {value("스페이스 채널1")}
+            jsonPath("$.channels[1].id") {value(2L)}
+            jsonPath("$.channels[1].name") {value("스페이스 채널2")}
         }
     }
 

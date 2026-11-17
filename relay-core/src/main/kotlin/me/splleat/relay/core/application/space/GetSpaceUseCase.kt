@@ -2,6 +2,7 @@ package me.splleat.relay.core.application.space
 
 import me.splleat.relay.core.application.UseCase
 import me.splleat.relay.core.application.space.dto.SpaceResult
+import me.splleat.relay.core.domain.channel.ChannelService
 import me.splleat.relay.core.domain.space.SpaceMemberService
 import me.splleat.relay.core.domain.space.SpaceService
 import org.springframework.transaction.annotation.Transactional
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class GetSpaceUseCase(
     private val spaceService: SpaceService,
     private val spaceMemberService: SpaceMemberService,
+    private val channelService: ChannelService,
 ) {
 
     @Transactional(readOnly = true)
@@ -18,8 +20,8 @@ class GetSpaceUseCase(
 
         val space = spaceService.getSpace(spaceId)
 
-        // TODO: 채널 등 스페이스 관련 필드 추가
+        val channels = channelService.getSpaceChannels(spaceId)
 
-        return SpaceResult.from(space)
+        return SpaceResult.from(space, channels)
     }
 }
