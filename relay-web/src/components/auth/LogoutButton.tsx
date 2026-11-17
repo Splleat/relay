@@ -1,6 +1,6 @@
 import { useActionState } from 'react';
-import { logout } from '../api/auth.ts';
-import { getErrorMessage } from '../api/errors.ts';
+import { logout } from '../../api/auth.ts';
+import { getErrorMessage } from '../../api/errors.ts';
 import { useNavigate } from 'react-router';
 
 export function LogoutButton() {

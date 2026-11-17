@@ -1,4 +1,4 @@
-import { useAuthStatus } from '../hooks/useAuthStatus.ts';
+import { useAuthStatus } from '../../hooks/useAuthStatus.ts';
 import { Navigate, Outlet } from 'react-router';
 
 export function RequireGuest() {

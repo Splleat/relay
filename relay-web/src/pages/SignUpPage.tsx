@@ -2,16 +2,15 @@ import { signUp } from '../api/auth.ts';
 import { useNavigate } from 'react-router';
 import { useActionState } from 'react';
 import { getErrorMessage } from '../api/errors.ts';
-
-type SignUpState = { error: string | null };
+import type { FormState } from '../types/common.ts';
 
 export function SignUpPage() {
     const navigate = useNavigate();
 
     const signUpAction = async (
-        _prevState: SignUpState,
+        _prevState: FormState,
         formData: FormData,
-    ): Promise<SignUpState> => {
+    ): Promise<FormState> => {
         const email = formData.get('email') as string;
         const name = formData.get('name') as string;
         const password = formData.get('password') as string;
