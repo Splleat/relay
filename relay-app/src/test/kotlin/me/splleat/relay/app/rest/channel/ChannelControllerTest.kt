@@ -58,7 +58,7 @@ class ChannelControllerTest {
         // then
         result.andExpect {
             status { isOk() }
-            content { string(expectedChannelId.toString()) }
+            content { expectedChannelId.toString() }
         }
     }
 

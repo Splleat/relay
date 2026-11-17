@@ -130,6 +130,7 @@ class SpaceControllerTest {
         // then
         result.andExpect {
             status { isOk() }
+            jsonPath("$.spaces[0].id") { isString() }
             jsonPath("$.spaces[0].id") { value(1L) }
             jsonPath("$.spaces[0].name") { value("개인 스페이스") }
             jsonPath("$.spaces[0].type") { value("PERSONAL") }
