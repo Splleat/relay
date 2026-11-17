@@ -2,16 +2,15 @@ import { useActionState } from 'react';
 import { login } from '../api/auth.ts';
 import { useNavigate } from 'react-router';
 import { getErrorMessage } from '../api/errors.ts';
-
-type LoginState = { error: string | null };
+import type { FormState } from '../types/common.ts';
 
 export function LoginPage() {
     const navigate = useNavigate();
 
     const loginAction = async (
-        _prevState: LoginState,
+        _prevState: FormState,
         formData: FormData,
-    ): Promise<LoginState> => {
+    ): Promise<FormState> => {
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
