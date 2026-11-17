@@ -4,15 +4,16 @@ import { Outlet } from 'react-router';
 
 function App() {
     return (
-        <div className="flex flex-col gap-2">
-            <div className="flex flex-row gap-2">
-                <h1 className="text-2xl font-bold text-blue-600">Relay</h1>
+        <div className="flex flex-col">
+            <div className="flex min-h-0">
+                <SpaceSidebar />
+                <main className="flex-1">
+                    <Outlet />
+                </main>
+            </div>
+            <div className="flex">
                 <LogoutButton />
             </div>
-            <div>
-                <SpaceSidebar />
-            </div>
-            <Outlet />
         </div>
     );
 }
