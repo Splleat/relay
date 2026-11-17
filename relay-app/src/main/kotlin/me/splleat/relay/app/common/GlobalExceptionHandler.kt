@@ -30,6 +30,8 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
             message = status.reasonPhrase,
         )
 
+        log.warn { "${status.value()} ${ex.javaClass.simpleName}: ${ex.message}" }
+
         return super.handleExceptionInternal(ex, body, headers, statusCode, request)
     }
 
