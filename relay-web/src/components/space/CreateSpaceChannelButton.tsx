@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Modal } from '../../ui/Modal.tsx';
 import { CreateSpaceChannelForm } from './CreateSpaceChannelForm.tsx';
+import { useModal } from '../../hooks/useModal.ts';
 
 export function CreateSpaceChannelButton({
     spaceId,
@@ -9,25 +9,17 @@ export function CreateSpaceChannelButton({
     spaceId: string;
     onSuccess: () => void;
 }) {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { isOpen, open, close } = useModal();
 
-    function handleClose() {
-        setIsOpen(false);
-    }
-
-    function modalOpen() {
-        setIsOpen(true);
-    }
-
-    function handleCreate() {
+    const handleCreate = () => {
         onSuccess();
-        handleClose();
-    }
+        close();
+    };
 
     return (
         <div>
-            <button onClick={modalOpen}>채널 생성</button>
-            <Modal open={isOpen} onClose={handleClose}>
+            <button onClick={open}>채널 생성</button>
+            <Modal open={isOpen} onClose={close}>
                 <CreateSpaceChannelForm
                     onCreate={handleCreate}
                     spaceId={spaceId}
