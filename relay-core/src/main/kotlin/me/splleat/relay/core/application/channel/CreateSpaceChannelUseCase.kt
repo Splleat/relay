@@ -22,7 +22,7 @@ class CreateSpaceChannelUseCase(
 
         spaceMember.validateOwner()
 
-        val channel = channelService.registerSpace(spaceId, command.channelName)
+        val channel = channelService.registerSpace(spaceId, command.name)
         val spaceUserIds = spaceMemberService.getAllUserIds(spaceId)
 
         channelMemberService.registerAll(spaceUserIds, channel.requireId())

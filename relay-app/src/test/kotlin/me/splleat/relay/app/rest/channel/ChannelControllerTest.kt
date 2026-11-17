@@ -84,10 +84,10 @@ class ChannelControllerTest {
     fun `스페이스 채널을 생성하면 201과 채널 Location 헤더를 반환한다`() {
         // given
         val spaceId = 1L
-        val request = CreateSpaceChannelRequest(channelName = "일반")
+        val request = CreateSpaceChannelRequest(name = "일반")
         val expectedChannelId = 10L
 
-        given { createSpaceChannelUseCase.execute(CreateSpaceChannelCommand(userId = 1L, spaceId = spaceId, channelName = "일반")) } returns expectedChannelId
+        given { createSpaceChannelUseCase.execute(CreateSpaceChannelCommand(userId = 1L, spaceId = spaceId, name = "일반")) } returns expectedChannelId
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces/$spaceId/channels", request)
@@ -103,7 +103,7 @@ class ChannelControllerTest {
     @WithTestUser
     fun `스페이스 채널 이름이 공백이면 400을 반환한다`() {
         // given
-        val request = CreateSpaceChannelRequest(channelName = "")
+        val request = CreateSpaceChannelRequest(name = "")
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces/1/channels", request)
@@ -120,7 +120,7 @@ class ChannelControllerTest {
     @Test
     fun `인증되지 않은 사용자가 스페이스 채널 생성을 요청하면 401을 반환한다`() {
         // given
-        val request = CreateSpaceChannelRequest(channelName = "일반")
+        val request = CreateSpaceChannelRequest(name = "일반")
 
         // when
         val result = mockMvc.postJson("/api/v1/spaces/1/channels", request)
@@ -139,7 +139,7 @@ class ChannelControllerTest {
     fun `스페이스 관리자가 아닌 사용자가 채널을 생성하려 하면 403을 반환한다`() {
         // given
         val spaceId = 1L
-        val request = CreateSpaceChannelRequest(channelName = "일반")
+        val request = CreateSpaceChannelRequest(name = "일반")
 
         given { createSpaceChannelUseCase.execute(any()) } throws BusinessException(SpaceMemberErrorCode.FORBIDDEN)
 

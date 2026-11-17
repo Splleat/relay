@@ -8,8 +8,8 @@ data class CreateSpaceChannelRequest(
 
     @field:NotBlank
     @field:Size(max = 50)
-    val channelName: String
+    val name: String
 ) {
     fun toCommand(userId: Long, spaceId: Long) =
-        CreateSpaceChannelCommand(userId = userId, spaceId = spaceId, channelName = channelName)
+        CreateSpaceChannelCommand(userId = userId, spaceId = spaceId,name = name)
 }
