@@ -1,5 +1,5 @@
-import { LogoutButton } from './components/LogoutButton.tsx';
-import { SpaceSidebar } from './components/SpaceSidebar.tsx';
+import { LogoutButton } from './components/auth/LogoutButton.tsx';
+import { SpaceSidebar } from './components/space/SpaceSidebar.tsx';
 import { Outlet } from 'react-router';
 
 function App() {

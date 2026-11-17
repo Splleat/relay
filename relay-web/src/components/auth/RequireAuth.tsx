@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router';
-import { useAuthStatus } from '../hooks/useAuthStatus.ts';
+import { useAuthStatus } from '../../hooks/useAuthStatus.ts';
 
 export function RequireAuth() {
     const status = useAuthStatus();

@@ -1,7 +1,7 @@
 import { useActionState, useId } from 'react';
-import type { FormState } from '../types/common.ts';
-import { createSpaceChannel } from '../api/space.ts';
-import { getErrorMessage } from '../api/errors.ts';
+import type { FormState } from '../../types/common.ts';
+import { createSpaceChannel } from '../../api/space.ts';
+import { getErrorMessage } from '../../api/errors.ts';
 
 export function CreateSpaceChannelForm({
     spaceId,

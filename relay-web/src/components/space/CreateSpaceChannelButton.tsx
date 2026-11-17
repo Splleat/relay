@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal } from './Modal.tsx';
+import { Modal } from '../../ui/Modal.tsx';
 import { CreateSpaceChannelForm } from './CreateSpaceChannelForm.tsx';
 
 export function CreateSpaceChannelButton({

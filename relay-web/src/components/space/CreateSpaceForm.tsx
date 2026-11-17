@@ -1,7 +1,7 @@
 import { useActionState, useId } from 'react';
-import { createSpace } from '../api/space.ts';
-import { getErrorMessage } from '../api/errors.ts';
-import type { FormState } from '../types/common.ts';
+import { createSpace } from '../../api/space.ts';
+import { getErrorMessage } from '../../api/errors.ts';
+import type { FormState } from '../../types/common.ts';
 
 export function CreateSpaceForm({ onCreate }: { onCreate: () => void }) {
     const [state, action, isPending] = useActionState(

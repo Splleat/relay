@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getJoinedSpaces, type JoinedSpacesResponse } from '../api/space.ts';
+import { getJoinedSpaces, type JoinedSpacesResponse } from '../../api/space.ts';
 import { Link } from 'react-router';
 import { CreateSpaceButton } from './CreateSpaceButton.tsx';
 

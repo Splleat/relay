@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal } from './Modal.tsx';
+import { Modal } from '../../ui/Modal.tsx';
 import { CreateSpaceForm } from './CreateSpaceForm.tsx';
 
 export function CreateSpaceButton({ onSuccess }: { onSuccess: () => void }) {

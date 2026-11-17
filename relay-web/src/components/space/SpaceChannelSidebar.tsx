@@ -1,4 +1,4 @@
-import type { SpaceChannelSummaryResponse } from '../api/space.ts';
+import type { SpaceChannelSummaryResponse } from '../../api/space.ts';
 import { Link } from 'react-router';
 import { CreateSpaceChannelButton } from './CreateSpaceChannelButton.tsx';
 

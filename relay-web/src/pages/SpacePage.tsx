@@ -1,6 +1,6 @@
 import { getSpace, type SpaceResponse } from '../api/space.ts';
 import { useCallback, useEffect, useState } from 'react';
-import { SpaceChannelSidebar } from '../components/SpaceChannelSidebar.tsx';
+import { SpaceChannelSidebar } from '../components/space/SpaceChannelSidebar.tsx';
 import { useRequiredParam } from '../hooks/useRequiredParam.ts';
 
 export function SpacePage() {
