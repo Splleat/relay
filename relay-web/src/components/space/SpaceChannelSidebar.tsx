@@ -15,7 +15,10 @@ export function SpaceChannelSidebar({
         <div className="flex flex-col gap-2">
             {channels &&
                 channels.map((channel) => (
-                    <Link to={`/channels/${channel.id}`} key={channel.id}>
+                    <Link
+                        to={`/spaces/${spaceId}/channels/${channel.id}`}
+                        key={channel.id}
+                    >
                         <div className="flex flex-row gap-2">
                             <p>{channel.name}</p>
                         </div>

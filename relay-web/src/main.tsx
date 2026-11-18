@@ -8,6 +8,7 @@ import { SignUpPage } from './pages/SignUpPage.tsx';
 import { RequireAuth } from './components/auth/RequireAuth.tsx';
 import { RequireGuest } from './components/auth/RequireGuest.tsx';
 import { SpacePage } from './pages/SpacePage.tsx';
+import { ChannelPage } from './pages/ChannelPage.tsx';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -19,7 +20,12 @@ createRoot(document.getElementById('root')!).render(
                 </Route>
                 <Route element={<RequireAuth />}>
                     <Route path="/" element={<App />}>
-                        <Route path="spaces/:spaceId" element={<SpacePage />} />
+                        <Route path="spaces/:spaceId" element={<SpacePage />}>
+                            <Route
+                                path="channels/:channelId"
+                                element={<ChannelPage />}
+                            />
+                        </Route>
                     </Route>
                 </Route>
             </Routes>
