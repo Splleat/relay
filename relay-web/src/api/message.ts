@@ -1,0 +1,42 @@
+import { fetchApi } from './client.ts';
+
+export interface SendMessageRequest {
+    content: string;
+    idempotencyKey: string;
+}
+
+export interface SendMessageResponse {
+    isCreated: boolean;
+    message: MessageResponse;
+}
+
+export interface MessageResponse {
+    messageId: string;
+    channelId: string;
+    senderId: string;
+    content: string;
+    createdAt: string;
+}
+
+export interface ChannelMessageResponse {
+    messages: MessageResponse[];
+    hasPrev: boolean;
+    hasNext: boolean;
+}
+
+export async function sendMessage(
+    channelId: string,
+    request: SendMessageRequest,
+): Promise<SendMessageResponse> {
+    return await fetchApi<SendMessageResponse>(
+        `/channels/${channelId}/messages`,
+        'POST',
+        request,
+    );
+}
+
+export async function getChannelMessages(channelId: string) {
+    return await fetchApi<ChannelMessageResponse>(
+        `/channels/${channelId}/messages`,
+    );
+}
