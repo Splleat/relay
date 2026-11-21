@@ -4,10 +4,27 @@ import { getChannelMessages, type MessageResponse } from '../../api/message.ts';
 import { ChannelHeader } from './ChannelHeader.tsx';
 import { ChannelBody } from './ChannelBody.tsx';
 import { MessageInput } from './MessageInput.tsx';
+import { subscribeChannel } from '../../api/stomp.ts';
 
 export function ChannelView({ channelId }: { channelId: string }) {
     const [channel, setChannel] = useState<ChannelResponse | null>(null);
     const [messages, setMessages] = useState<MessageResponse[]>([]);
+
+    const addMessage = useCallback((message: MessageResponse) => {
+        setMessages((prev) => {
+            const existsMessage = prev
+                .map((m) => m.messageId)
+                .includes(message.messageId);
+
+            if (existsMessage) return prev;
+
+            return [...prev, message];
+        });
+    }, []);
+
+    useEffect(() => {
+        return subscribeChannel(channelId, addMessage);
+    }, [channelId, addMessage]);
 
     const loadChannel = useCallback(() => {
         getChannel(channelId).then(setChannel);
@@ -28,15 +45,11 @@ export function ChannelView({ channelId }: { channelId: string }) {
         return null;
     }
 
-    function handleSendMessage(message: MessageResponse) {
-        setMessages((prev) => [...prev, message]);
-    }
-
     return (
         <div className="flex h-full flex-col">
             <ChannelHeader channel={channel} />
             <ChannelBody messages={messages} />
-            <MessageInput channelId={channelId} onSent={handleSendMessage} />
+            <MessageInput channelId={channelId} onSent={addMessage} />
         </div>
     );
 }
