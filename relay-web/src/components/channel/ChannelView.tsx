@@ -48,7 +48,10 @@ export function ChannelView({ channelId }: { channelId: string }) {
     return (
         <div className="flex h-full flex-col">
             <ChannelHeader channel={channel} />
-            <ChannelBody messages={messages} />
+            <ChannelBody
+                channelMembers={channel.channelMemberList}
+                messages={messages}
+            />
             <MessageInput channelId={channelId} onSent={addMessage} />
         </div>
     );
