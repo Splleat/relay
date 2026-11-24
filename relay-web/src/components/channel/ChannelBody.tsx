@@ -9,15 +9,23 @@ export function ChannelBody({
     channelMembers: ChannelMemberResponse[];
     messages: MessageResponse[];
 }) {
+    // flex-col-reverse: 스크롤 기준점이 아래쪽이라 새 메시지가 오면 바닥에 붙어 있다
     return (
-        <div>
-            {messages.map((message) => (
-                <MessageItem
-                    key={message.messageId}
-                    sender={findSender(message.senderId, channelMembers)}
-                    message={message}
-                />
-            ))}
+        <div className="flex min-h-0 flex-1 flex-col-reverse overflow-y-auto">
+            <div className="flex flex-col py-4">
+                {messages.length === 0 && (
+                    <p className="px-5 py-10 text-center text-sm text-muted">
+                        아직 메시지가 없습니다. 첫 메시지를 보내 보세요.
+                    </p>
+                )}
+                {messages.map((message) => (
+                    <MessageItem
+                        key={message.messageId}
+                        sender={findSender(message.senderId, channelMembers)}
+                        message={message}
+                    />
+                ))}
+            </div>
         </div>
     );
 }

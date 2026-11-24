@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getJoinedSpaces, type JoinedSpacesResponse } from '../../api/space.ts';
-import { Link } from 'react-router';
+import { NavLink } from 'react-router';
 import { CreateSpaceButton } from './CreateSpaceButton.tsx';
 
 export function SpaceSidebar() {
@@ -15,16 +15,25 @@ export function SpaceSidebar() {
     }, []);
 
     return (
-        <div className="flex flex-col gap-2">
+        <nav className="flex min-h-0 flex-1 flex-col items-center gap-2 overflow-y-auto">
             {spaces?.spaces &&
                 spaces.spaces.map((space) => (
-                    <Link to={`/spaces/${space.id}`} key={space.id}>
-                        <div className="flex flex-row gap-2">
-                            <p>{space.name}</p>
-                        </div>
-                    </Link>
+                    <NavLink
+                        to={`/spaces/${space.id}`}
+                        key={space.id}
+                        title={space.name}
+                        className={({ isActive }) =>
+                            `flex size-11 shrink-0 items-center justify-center font-semibold transition-all ${
+                                isActive
+                                    ? 'rounded-xl bg-accent text-accent-fg'
+                                    : 'rounded-2xl bg-rail-item text-rail-fg hover:rounded-xl hover:text-white'
+                            }`
+                        }
+                    >
+                        {space.name.at(0)}
+                    </NavLink>
                 ))}
             <CreateSpaceButton onSuccess={loadJoinedSpaces} />
-        </div>
+        </nav>
     );
 }

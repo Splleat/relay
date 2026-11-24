@@ -26,8 +26,13 @@ export function Modal({
     }
 
     return (
-        <dialog ref={ref} onClose={onClose} onClick={handleDialogClick}>
-            {children}
+        <dialog
+            ref={ref}
+            onClose={onClose}
+            onClick={handleDialogClick}
+            className="m-auto w-full max-w-sm rounded-2xl border border-border bg-surface p-0 text-fg shadow-xl backdrop:bg-black/40"
+        >
+            <div className="p-6">{children}</div>
         </dialog>
     );
 }

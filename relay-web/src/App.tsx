@@ -1,19 +1,23 @@
 import { LogoutButton } from './components/auth/LogoutButton.tsx';
 import { SpaceSidebar } from './components/space/SpaceSidebar.tsx';
-import { Outlet } from 'react-router';
+import { useOutlet } from 'react-router';
 
 function App() {
+    const outlet = useOutlet();
+
     return (
-        <div className="flex flex-col">
-            <div className="flex min-h-0">
+        <div className="flex h-dvh overflow-hidden">
+            <aside className="flex w-[72px] shrink-0 flex-col items-center gap-3 bg-rail py-3">
                 <SpaceSidebar />
-                <main className="flex-1">
-                    <Outlet />
-                </main>
-            </div>
-            <div className="flex">
                 <LogoutButton />
-            </div>
+            </aside>
+            <main className="flex min-w-0 flex-1">
+                {outlet ?? (
+                    <div className="flex flex-1 items-center justify-center text-sm text-muted">
+                        왼쪽에서 스페이스를 선택하세요.
+                    </div>
+                )}
+            </main>
         </div>
     );
 }
