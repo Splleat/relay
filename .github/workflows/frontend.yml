@@ -1,0 +1,56 @@
+name: Frontend
+
+on:
+  push:
+    branches: [ main ]
+    paths: &frontend-paths
+      - relay-web/**
+      - deploy/front.Dockerfile
+      - deploy/nginx.conf
+      - .github/workflows/frontend.yml
+      - .github/workflows/deploy.yml
+  pull_request:
+    branches: [ main, dev ]
+    paths: *frontend-paths
+  workflow_dispatch:
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: 포맷 / 린트 / 빌드
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: relay-web
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: relay-web/package-lock.json
+
+      - run: npm ci
+
+      # format:check → lint → tsc + vite build
+      - run: npm run check
+
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      packages: write
+    with:
+      service: web
+      image: relay-web
+      dockerfile: deploy/front.Dockerfile
+    secrets: inherit

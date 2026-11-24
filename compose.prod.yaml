@@ -13,6 +13,7 @@ services:
 
   cloudflared:
     image: cloudflare/cloudflared:latest
+    restart: unless-stopped
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: ${TUNNEL_TOKEN}
@@ -22,9 +23,7 @@ services:
       - relay-network
 
   web:
-    build:
-      context: .
-      dockerfile: deploy/front.Dockerfile
+    image: ghcr.io/splleat/relay-web:latest
     container_name: web
     ports:
       - "127.0.0.1:80:80"
@@ -35,9 +34,7 @@ services:
       - relay-network
 
   app:
-    build:
-      context: .
-      dockerfile: deploy/backend.Dockerfile
+    image: ghcr.io/splleat/relay-app:latest
     container_name: app
     ports:
       - "127.0.0.1:8080:8080"

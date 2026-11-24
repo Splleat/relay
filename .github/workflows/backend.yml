@@ -1,0 +1,54 @@
+name: Backend
+
+on:
+  push:
+    branches: [ main ]
+    paths: &backend-paths
+      - relay-app/**
+      - relay-core/**
+      - build.gradle.kts
+      - settings.gradle.kts
+      - gradle/**
+      - gradlew
+      - deploy/backend.Dockerfile
+      - .github/workflows/backend.yml
+      - .github/workflows/deploy.yml
+  pull_request:
+    branches: [ main, dev ]
+    paths: *backend-paths
+  workflow_dispatch:
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: 빌드·테스트
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - uses: gradle/actions/setup-gradle@v6
+      - run: ./gradlew build
+
+  deploy:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      packages: write
+    with:
+      service: app
+      image: relay-app
+      dockerfile: deploy/backend.Dockerfile
+    secrets: inherit
