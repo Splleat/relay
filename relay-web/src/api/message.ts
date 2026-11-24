@@ -35,8 +35,21 @@ export async function sendMessage(
     );
 }
 
-export async function getChannelMessages(channelId: string) {
+export async function getChannelMessages(
+    channelId: string,
+    before?: string,
+    after?: string,
+    limit?: string,
+) {
+    const params = new URLSearchParams();
+
+    if (before) params.append('before', before);
+
+    if (after) params.append('after', after);
+
+    if (limit) params.append('limit', limit);
+
     return await fetchApi<ChannelMessageResponse>(
-        `/channels/${channelId}/messages`,
+        `/channels/${channelId}/messages?${params.toString()}`,
     );
 }
