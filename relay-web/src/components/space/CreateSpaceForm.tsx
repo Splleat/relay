@@ -27,13 +27,20 @@ export function CreateSpaceForm({ onCreate }: { onCreate: () => void }) {
 
     return (
         <div>
-            <form action={action} className="flex flex-col gap-2">
-                <div className="flex flex-row gap-2">
-                    <label htmlFor={id}>스페이스 이름</label>
-                    <input id={id} name="name" required />
+            <h2 className="text-lg font-semibold">새 스페이스</h2>
+            <form action={action} className="mt-4 flex flex-col gap-4">
+                <div>
+                    <label htmlFor={id} className="field-label">
+                        스페이스 이름
+                    </label>
+                    <input id={id} name="name" required className="input" />
                 </div>
-                {state.error && <p className="text-red-500">{state.error}</p>}
-                <button type="submit" disabled={isPending}>
+                {state.error && <p className="form-error">{state.error}</p>}
+                <button
+                    type="submit"
+                    disabled={isPending}
+                    className="btn-primary self-end"
+                >
                     {isPending ? '생성 중...' : '생성'}
                 </button>
             </form>

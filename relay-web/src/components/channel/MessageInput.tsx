@@ -39,20 +39,27 @@ export function MessageInput({
         { error: null },
     );
     return (
-        <div className="flex flex-col">
-            {state.error && <p className="text-red-500">{state.error}</p>}
-            <div className="flex flex-row">
-                <form action={action}>
-                    <textarea
-                        id="content"
-                        name="content"
-                        placeholder="메시지 전송"
-                    />
-                    <button type="submit" disabled={isPending}>
-                        전송
-                    </button>
-                </form>
-            </div>
+        <div className="shrink-0 px-5 pb-5">
+            {state.error && <p className="form-error mb-2">{state.error}</p>}
+            <form
+                action={action}
+                className="flex items-end gap-2 rounded-xl border border-border bg-surface p-2 transition-colors focus-within:border-accent"
+            >
+                <textarea
+                    id="content"
+                    name="content"
+                    placeholder="메시지 전송"
+                    rows={1}
+                    className="max-h-40 min-h-9 flex-1 resize-none bg-transparent px-2 py-1.5 text-[15px] outline-none field-sizing-content placeholder:text-muted"
+                />
+                <button
+                    type="submit"
+                    disabled={isPending}
+                    className="btn-primary h-9 shrink-0 px-4"
+                >
+                    전송
+                </button>
+            </form>
         </div>
     );
 }

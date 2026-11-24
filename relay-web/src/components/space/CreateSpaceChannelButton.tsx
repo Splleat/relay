@@ -18,7 +18,14 @@ export function CreateSpaceChannelButton({
 
     return (
         <div>
-            <button onClick={open}>채널 생성</button>
+            <button
+                onClick={open}
+                title="채널 생성"
+                aria-label="채널 생성"
+                className="flex size-6 cursor-pointer items-center justify-center rounded-md text-base text-muted transition-colors hover:bg-hover hover:text-fg"
+            >
+                +
+            </button>
             <Modal open={isOpen} onClose={close}>
                 <CreateSpaceChannelForm
                     onCreate={handleCreate}
