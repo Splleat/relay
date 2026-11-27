@@ -4,7 +4,7 @@ import { getChannelMessages, type MessageResponse } from '../../api/message.ts';
 import { ChannelHeader } from './ChannelHeader.tsx';
 import { ChannelBody } from './ChannelBody.tsx';
 import { MessageInput } from './MessageInput.tsx';
-import { subscribeChannel } from '../../api/stomp.ts';
+import { useSocket } from '../../hooks/useSocket.ts';
 
 function mergeMessages(
     current: MessageResponse[],
@@ -26,6 +26,7 @@ function mergeMessages(
 }
 
 export function ChannelView({ channelId }: { channelId: string }) {
+    const { isConnected, subscribeChannel } = useSocket();
     const [channel, setChannel] = useState<ChannelResponse | null>(null);
     const [messages, setMessages] = useState<MessageResponse[]>([]);
     const [hasPrev, setHasPrev] = useState(false);
@@ -36,8 +37,10 @@ export function ChannelView({ channelId }: { channelId: string }) {
     }, []);
 
     useEffect(() => {
+        if (!isConnected) return;
+
         return subscribeChannel(channelId, addMessage);
-    }, [channelId, addMessage]);
+    }, [channelId, addMessage, isConnected, subscribeChannel]);
 
     const loadChannel = useCallback(() => {
         getChannel(channelId).then(setChannel);
